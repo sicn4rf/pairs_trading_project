@@ -16,6 +16,11 @@ print("Gathering data from yfinance...")
 for tick in tickers:
     current_tick = yf.Ticker(tick)
     data_frame = current_tick.history(start=start_date.strftime('%Y-%m-%d'),end=end_date.strftime('%Y-%m-%d'),interval='1d',auto_adjust=True)
-    data_frame.to_csv(f"{tick}.csv")
+
+    # Task 3: Store into /data folder not python.
+
+    data_frame.to_csv(f"../data/{tick}.csv")
 
 print("Done pookie <3")
+
+
