@@ -10,3 +10,12 @@ end_date = datetime.today()
 start_date = end_date - timedelta(days=365)
 
 # Task 2: iterate through list, and use yfinance to read and pandas to store into csv.
+
+print("Gathering data from yfinance...")
+
+for tick in tickers:
+    current_tick = yf.Ticker(tick)
+    data_frame = current_tick.history(start=start_date.strftime('%Y-%m-%d'),end=end_date.strftime('%Y-%m-%d'),interval='1d',auto_adjust=True)
+    data_frame.to_csv(f"{tick}.csv")
+
+print("Done pookie <3")
