@@ -21,6 +21,6 @@ for tick in tickers:
 
     data_frame.to_csv(f"../data/{tick}.csv")
 
-print("Done pookie <3")
+print("Done collecting data.")
 
 
