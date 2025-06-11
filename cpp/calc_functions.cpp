@@ -4,66 +4,119 @@
 
 
 // === TASK 1: Implement readCSV() ===
-// Reads a CSV file with yfinance format
-// Extracts Date and Close columns, stores log(Close)
-// Populates StockData struct (dates[], log_prices[])
-... readCSV(...)
+// Reads CSV file and extracts Date and Adj Close columns.
+// Stores Date into dates[], raw Adj Close into raw_prices[], and log(Adj Close) into log_prices[].
+bool readCSV(...) 
 {
 
 }
 
-// === TASK 2: Implement getCommonDates() ===
-// Takes all StockData and finds dates present in *all* stocks
-// Uses std::set and set_intersection()
-... getCommonDates(...)
+
+
+// === TASK 2: Implement alignDates() ===
+// Takes all StockData objects and finds common dates shared across all stocks.
+// Uses std::set and set_intersection() to compute the intersection.
+set<string> alignDates(...) 
 {
 
 }
+
+
 
 // === TASK 3: Implement extractAlignedPrices() ===
-// Given a StockData and a set of common dates
-// Extracts log prices that match those dates (in order)
-... extractAlignedPrices(...)
+// Given a StockData object and common date set,
+// extracts raw_prices and log_prices that match those dates.
+// You may implement 2 overloaded versions for raw and log prices.
+vector<double> extractAlignedPrices(...) 
 {
 
 }
 
-// === TASK 4: Implement mean(), variance(), stddev(), iqr() ===
-// Each takes a vector<double> and returns a double
-// IQR uses sorting and indexes Q1, Q3
-... mean(...)
+
+
+// === TASK 4: Implement computeLogReturns() ===
+// Takes a vector of log_prices and computes log returns:
+// log_return[i] = log_price[i] - log_price[i-1]
+// First value skipped (since no previous price).
+vector<double> computeLogReturns(...) 
 {
 
 }
 
-... variance(...)
+
+
+// === TASK 5: Implement mean() ===
+// Takes a vector<double> and computes the mean.
+double mean(...) 
 {
 
 }
 
-... stddev(...)
+
+
+// === TASK 6: Implement variance() ===
+// Takes a vector<double> and its mean, computes variance.
+double variance(...) 
 {
 
 }
 
-... inter_quartile_range(...)
+
+
+// === TASK 7: Implement stddev() ===
+// Takes a vector<double> and its mean, returns standard deviation.
+double stddev(...) 
 {
 
 }
 
-// === TASK 5: Implement pearson() ===
-// Takes two vectors (x, y) and returns Pearson correlation
-// Use greedy implementation (manual sums)
-... pearson(...)
+
+
+// === TASK 8: Implement iqr() ===
+// Takes a vector<double>, sorts it, and computes interquartile range.
+// IQR = Q3 - Q1
+double iqr(...) 
 {
 
 }
 
-// === TASK 6: Implement exportResidualCSV() ===
-// Run linear regression: y = alpha + beta * x
-// Compute residuals (y_i - predicted_y_i)
-// Write date, stock1, stock2, residual to a CSV file
-... exportResidualCSV(...)
+
+
+// === TASK 9: Implement spread() ===
+// Takes a vector<double>, returns (max - min).
+double spread(...) 
+{
+
+}
+
+
+
+// === TASK 10: Implement pearsonCorrelation() ===
+// Takes two vectors of log returns, computes Pearson correlation coefficient.
+double pearsonCorrelation(...) 
+{
+
+}
+
+
+
+// === TASK 11: Implement linearRegression() ===
+// Given two log price vectors, compute:
+// - beta
+// - alpha
+// - residuals for each point
+// Follows OLS regression formulas.
+void linearRegression(...) 
+{
+
+}
+
+
+
+// === TASK 12: Implement exportResidualCSV() ===
+// Writes CSV file for a valid pair:
+// Columns: Date, Stock1 log price, Stock2 log price, Residual.
+void exportResidualCSV(...) 
 {
 
 }
