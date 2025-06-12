@@ -1,5 +1,4 @@
-#include <iostream>
-#include <vector>
+#include "calc_functions.h"
 
 
 int main(void)
@@ -7,6 +6,34 @@ int main(void)
     // === TASK 1: Read CSVs into StockData objects ===
     // For each of the 10 CSV files, read raw adjusted close prices, compute log prices,
     // and store them into StockData objects containing dates, raw_prices, log_prices.
+    
+    // Declare a vector of ticker names along with an empty vector of StockData objects where we shall store
+    // an object storing the data from the .csv files of every ticker we have.
+    vector<string> tickers = {"AAPL", "MSFT", "AMZN", "GOOG", "META", "NVDA", "TSLA", "INTC", "CSCO", "ORCL"};
+    vector<StockData> stock_universe;
+
+
+    // Loop through every ticker in our tickers vector.
+    for(const string& current_ticker : tickers)
+    {
+        // Create a temporary stockData object to read our values into.
+        StockData temp_object;
+
+        // readCSV returns a boolean value of whether reading was successful or not. if it was, push that 
+        // current temporary object into our stock_universe vector. readCSV takes in 2 arguments, a string
+        // file name which will be used to open our filestream to read from and a StockData object which will
+        // be passed by reference
+        if(readCSV("../../data_downloader/data/" + current_ticker + ".csv", temp_object) == true)
+        {
+            // set temp_objects ticker to be the name of the current ticker
+            strcpy(temp_object.ticker_name, current_ticker);
+
+            stock_universe.push_back(temp_object);
+        }
+    }
+    // End of task 1
+
+
 
     // === TASK 2: Align dates across all stocks ===
     // Build a master set of common dates that exist across all 10 stocks.

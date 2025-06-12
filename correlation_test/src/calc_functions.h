@@ -1,6 +1,18 @@
 // This header file contains all the function prototypes for our correlation
 // testing program
+#pragma once
 
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cmath>
+#include <algorithm>
+#include <set>
+#include <map>
+
+using namespace std;
 
 // === TASK 1: Define StockData struct ===
 // struct StockData {
@@ -8,6 +20,14 @@
 //     vector<double> raw_prices;
 //     vector<double> log_prices;
 // };
+
+struct StockData
+{
+    vector<string> dates;
+    vector<string> raw_prices;
+    vector<string> log_prices;
+    string ticker_name;
+}
 
 // === TASK 2: Declare all function prototypes ===
 // Declare functions for:

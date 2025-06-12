@@ -6,9 +6,61 @@
 // === TASK 1: Implement readCSV() ===
 // Reads CSV file and extracts Date and Adj Close columns.
 // Stores Date into dates[], raw Adj Close into raw_prices[], and log(Adj Close) into log_prices[].
-bool readCSV(...) 
-{
+bool readCSV(const string& file_name, StockData& temp_stock) 
+{   
+    // Create a file stream object for reading. In this case, "file_name" is actually,
+    // "../../data_downloader/data/___.csv"
+    ifstream read_file(file_name);
 
+    // Test for filestream open failure. If failed, return false. DONT PUSH_BACK FAILED OBJECT READING
+    if(read_file.is_open() != true)
+    {
+        return false;
+    }
+
+    // Create variables to hold current line and temporary values for reading
+    string current_line;
+    string date;
+    string close;
+    string temp; // Use this to hold Open, High, Low, Volume, Dividends, and Stock Splits
+                // We only care about adj close price and date.
+
+    getline(read_file, current_line); // do this to skip the first line (header)
+
+    while(getline(read_file, current_line))
+    {
+        // Create a string stream variable of the current line so we can use getline
+        // on it and treat it like a stream
+        stringstream str_stream(current_line);
+
+        // Recall: getline("an input stream", "a string variable for storage", 
+        // "an optional delimiter, is \n by default")
+        getline(str_stream, date, ",");
+        getline(str_stream, temp, ","); // Open
+        getline(str_stream, temp, ","); // High
+        getline(str_stream, temp,",");  // Low
+        getline(str_stream, close, ",");
+        getline(str_stream, temp, ","); // Volume
+        getline(str_stream, temp, ","); // Dividends
+        getline(str_stream, temp, ","); // Stock Splits
+
+        
+        // if our date and close strings are non_empty. Store them into our temp_stock object
+        if(date.empty() == false || close.empty() == false)
+        {
+            temp_stock.dates.push_back(date);
+            
+            // Close is a string, conver it to a double before pushing into objects vector
+            double price = stod(close);
+
+            temp_stock.raw_prices.push_back(price);
+
+            // Push the value of the natural log of close price
+            temp_stock.log_prices.push_back(log(price));
+        }   
+    }
+
+    return true;
 }
 
 
