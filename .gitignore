@@ -1,4 +1,4 @@
-/data/*.csv
-/results/*
+/data_downloader/data/*.csv
+/correlation_test/results/*
 __pycache__/
 *.pyc
