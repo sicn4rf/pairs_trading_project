@@ -24,6 +24,9 @@ for tick in tickers:
     # of that particular stock from a start to end date, which we store in a data frame using pandas.
     data_frame = current_tick.history(start=start_date.strftime('%Y-%m-%d'),end=end_date.strftime('%Y-%m-%d'),interval='1d',auto_adjust=True)
 
+    # Make it so that our data frame for date only includes the date and not the time
+    data_frame.index = data_frame.index.date
+    
     # Use pandas to store the historical data from the data frame into a .csv file
     data_frame.to_csv(f"../data/{tick}.csv")
 
