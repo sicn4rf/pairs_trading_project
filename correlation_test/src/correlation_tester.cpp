@@ -40,10 +40,47 @@ int main(void)
     // Use set intersection to ensure perfect alignment of dates.
     // After alignment, extract the corresponding raw_prices and log_prices for each stock.
 
+    // REMEMBER NOW WE DONT NEED A COMMON INTERSECTION OF DATES, 
+    // WE JUST NEED TO SEE IF THEYRE ALREADY ALIGNED. IF NOT, END THE PROGRAM.
+
+
     // === TASK 3: Calculate per-stock statistics on raw prices ===
     // For each stock's raw_prices vector:
     // - Compute mean, variance, standard deviation, IQR, and spread (range).
     // - Output these statistics into a .txt file.
+
+    // Open a results file to write the statistics
+    ofstream results_file("../results/results.txt");
+    if(!results_file.is_open())
+    {
+        cerr << "Error opening results file." << endl;
+        return 1; // Exit if file cannot be opened
+    }
+
+    for(StockData& current_stock : stock_universe)
+    {
+        // Calculate statistics for the current stock's raw_prices
+        // Assuming raw_prices is already aligned with the common dates
+        double mean = mean(current_stock.raw_prices);
+        double variance = variance(current_stock.raw_prices, mean);
+        double stddev = stddev(current_stock.raw_prices, mean);
+        double iqr_value = iqr(current_stock.raw_prices);
+        double spread_value = spread(current_stock.raw_prices);
+
+        // Output the statistics to a text file named after the stock ticker
+        results_file << "Ticker: " << current_stock.ticker_name << endl;
+        results_file << "Mean: " << mean << endl;
+        results_file << "Variance: " << variance << endl;
+        results_file << "Standard Deviation: " << stddev << endl;
+        results_file << "IQR: " << iqr_value << endl;
+        results_file << "Spread: " << spread_value << endl;
+        results_file << "----------------------------------------" << endl;
+    }
+
+    // End of task 3
+    results_file.close(); // Close the results file after writing all statistics
+    
+
 
     // === TASK 4: Calculate log returns for each stock ===
     // For each stock's aligned log_prices vector:

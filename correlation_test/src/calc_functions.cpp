@@ -73,17 +73,26 @@ set<string> alignDates(...)
 
 }
 
+// NOT NEEDED FOR NOW SINCE WE DONT NEED TO ALIGN DATES^^^
+
+//INSTEAD IMPLEMENT A FUNCTION THAT CHECKS IF ALL STOCKS ARE ALREADY ALIGNED, checkCommonDates()
+// CHECK EACH DATE VECTOR OF STRINGS AND SEE THEY HAVE THE SAME VALUES AND SIZES
+bool checkCommonDates(const vector<StockData>& stock_objects) 
+{
+
+}
 
 
 // === TASK 3: Implement extractAlignedPrices() ===
 // Given a StockData object and common date set,
 // extracts raw_prices and log_prices that match those dates.
 // You may implement 2 overloaded versions for raw and log prices.
-vector<double> extractAlignedPrices(...) 
+vector<double> extractAlignedPrices(StockData& stock_object,) 
 {
 
 }
 
+// NOT NEEDED FOR NOW SINCE WE DONT NEED TO ALIGN DATES^^^
 
 
 // === TASK 4: Implement computeLogReturns() ===
@@ -99,9 +108,23 @@ vector<double> computeLogReturns(...)
 
 // === TASK 5: Implement mean() ===
 // Takes a vector<double> and computes the mean.
-double mean(...) 
+double mean(const vector<double>& stock_values) 
 {
+    if(stock_values.empty())
+    {
+        return 0; // Return 0 if the vector is empty to avoid division by zero
+    }
 
+    double sum = 0.0;
+
+
+    // Sum all values in the vector
+    for(const double& value : stock_values)
+    {
+        sum += value
+    }
+
+    return sum / stock_values.size(); // Return the sum of all values divided by the number of values
 }
 
 
@@ -117,11 +140,15 @@ double variance(...)
 
 // === TASK 7: Implement stddev() ===
 // Takes a vector<double> and its mean, returns standard deviation.
-double stddev(...) 
+double stddev(vector<double>& stock_values, double mean_value) 
 {
+    if(stock_values.empty())
+    {
+        return 0; // Return 0 if the vector is empty to avoid division by zero
+    }
 
+    return sqrt(variance(stock_values, mean_value)); // Standard deviation is the square root of variance
 }
-
 
 
 // === TASK 8: Implement iqr() ===
