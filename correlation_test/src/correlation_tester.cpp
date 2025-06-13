@@ -26,7 +26,7 @@ int main(void)
         if(readCSV("../../data_downloader/data/" + current_ticker + ".csv", temp_object) == true)
         {
             // set temp_objects ticker to be the name of the current ticker
-            strcpy(temp_object.ticker_name, current_ticker);
+            temp_object.ticker_name = current_ticker;
 
             stock_universe.push_back(temp_object);
         }
@@ -83,14 +83,25 @@ int main(void)
 
 
     // === TASK 4: Calculate log returns for each stock ===
-    // For each stock's aligned log_prices vector:
     // - Compute log returns by subtracting previous day's log price.
-    // - Store log returns for correlation calculations.
+    // - Store log returns for correlation calculations. (STORE IN VECTOR STOCK DATA OBJECT)
 
     // === TASK 5: Compute Pearson correlation for all stock pairs ===
     // Loop through all 45 unique stock pairs:
     // - For each pair, compute Pearson correlation using their log returns.
     // - If absolute correlation >= 0.7, consider this pair valid for cointegration.
+    for(int i = 0; i < stock_universe.size() - 1; i++)
+    {
+        for(int j = i + 1; i < stock_universe.size(); i++)
+        {
+            double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
+
+            if(pow(abs(corr_coeff), 2) >= 0.7)
+            {
+                // TASK 6 linearRegression(log prices of both stocks)
+            }
+        }
+    }
 
     // === TASK 6: Run linear regression on valid pairs using log prices ===
     // For each valid pair:

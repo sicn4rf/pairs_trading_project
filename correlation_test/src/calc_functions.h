@@ -24,10 +24,11 @@ using namespace std;
 struct StockData
 {
     vector<string> dates;
-    vector<string> raw_prices;
-    vector<string> log_prices;
+    vector<double> raw_prices;
+    vector<double> log_prices;
+    vector<double> log_returns;
     string ticker_name;
-}
+};
 
 // === TASK 2: Declare all function prototypes ===
 // Declare functions for:
@@ -48,4 +49,4 @@ struct StockData
 // Include necessary headers:
 // <iostream>, <fstream>, <sstream>, <vector>, <string>, <cmath>, <algorithm>, <set>, <map>
 // Use include guards (#pragma once or #ifndef ... #endif).
-// Declare 'using namespace std;' or qualify with std::.
+// Declare 'using namespace std;' or qualify with std::

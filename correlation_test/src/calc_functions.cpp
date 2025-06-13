@@ -1,6 +1,6 @@
 // This file contains the implementations for every calculation function we
 // intend to use in our correlation testing program.
-
+#include "calc_functions.h"
 
 
 // === TASK 1: Implement readCSV() ===
@@ -35,14 +35,14 @@ bool readCSV(const string& file_name, StockData& temp_stock)
 
         // Recall: getline("an input stream", "a string variable for storage", 
         // "an optional delimiter, is \n by default")
-        getline(str_stream, date, ",");
-        getline(str_stream, temp, ","); // Open
-        getline(str_stream, temp, ","); // High
-        getline(str_stream, temp,",");  // Low
-        getline(str_stream, close, ",");
-        getline(str_stream, temp, ","); // Volume
-        getline(str_stream, temp, ","); // Dividends
-        getline(str_stream, temp, ","); // Stock Splits
+        getline(str_stream, date, ',');
+        getline(str_stream, temp, ','); // Open
+        getline(str_stream, temp, ','); // High
+        getline(str_stream, temp,',');  // Low
+        getline(str_stream, close, ',');
+        getline(str_stream, temp, ','); // Volume
+        getline(str_stream, temp, ','); // Dividends
+        getline(str_stream, temp, ','); // Stock Splits
 
         
         // if our date and close strings are non_empty. Store them into our temp_stock object
@@ -87,11 +87,13 @@ bool checkCommonDates(const vector<StockData>& stock_objects)
 // Given a StockData object and common date set,
 // extracts raw_prices and log_prices that match those dates.
 // You may implement 2 overloaded versions for raw and log prices.
+
+/*
 vector<double> extractAlignedPrices(StockData& stock_object,) 
 {
 
 }
-
+*/
 // NOT NEEDED FOR NOW SINCE WE DONT NEED TO ALIGN DATES^^^
 
 
@@ -121,7 +123,7 @@ double mean(const vector<double>& stock_values)
     // Sum all values in the vector
     for(const double& value : stock_values)
     {
-        sum += value
+        sum += value;
     }
 
     return sum / stock_values.size(); // Return the sum of all values divided by the number of values
@@ -163,9 +165,26 @@ double iqr(...)
 
 // === TASK 9: Implement spread() ===
 // Takes a vector<double>, returns (max - min).
-double spread(...) 
+double spread(vector<double>& stock_values) 
 {
+    double min = stock_values[0];
+    double max = stock_values[0];
 
+    // Simple greedy algorithm to find max and min of a given vector of doubles
+    for(const double& current_value : stock_values)
+    {
+        if(current_value < min)
+        {
+            min = current_value;
+        }
+        
+        if(current_value > max)
+        {
+            max = current_value;
+        }
+    }
+
+    return (max - min);  // returns spread
 }
 
 
@@ -185,9 +204,38 @@ double pearsonCorrelation(...)
 // - alpha
 // - residuals for each point
 // Follows OLS regression formulas.
-void linearRegression(...) 
+void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY,
+                    double& refAlpha, double& refBeta, vector<double>& refResiduals) 
 {
+    // Declare mean values for stocks X and Y
+    double mean_stockX = mean(stock_valuesX);
+    double mean_stockY = mean(stock_valuesY);
 
+    double numerator = 0;
+    double denominator = 0;
+
+    double residual;
+
+    // Compute numerator and denominator for beta
+    for(int i = 0; i < stock_valuesX.size(); i++)
+    {
+        // [X(at time) - X(mean)] * [Y(at time) - Y(mean)]
+        numerator += ((stock_valuesX[i] - mean_stockX) * (stock_valuesY[i] - mean_stockY));
+        // [X(at time) - X(mean)]^2
+        denominator += pow((stock_valuesX[i] - mean_stockX), 2);
+    }
+
+    refBeta = numerator / denominator;
+    refAlpha = mean_stockY - (refBeta * mean_stockX);
+
+    // Loop through every value in the pair of stocks and use alpha and beta to calculate residuals
+    // Store these residuals in a vector
+    for(int i = 0; i < stock_valuesX.size(); i++)
+    {
+        residual = stock_valuesY[i] - (refAlpha + (refBeta * stock_valuesX[i]));
+
+        refResiduals.push_back(residual);
+    }
 }
 
 
