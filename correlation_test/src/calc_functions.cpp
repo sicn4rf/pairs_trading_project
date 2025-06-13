@@ -193,7 +193,7 @@ double stddev(vector<double>& stock_values, double mean_value)
         return 0; // Return 0 if the vector is empty to avoid division by zero
     }
 
-    return sqrt(variance(stock_values, mean_value)); // Standard deviation is the square root of variance
+    return sqrt(variance(stock_values)); // Standard deviation is the square root of variance
 }
 
 
