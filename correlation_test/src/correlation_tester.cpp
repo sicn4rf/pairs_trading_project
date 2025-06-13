@@ -42,6 +42,11 @@ int main(void)
 
     // REMEMBER NOW WE DONT NEED A COMMON INTERSECTION OF DATES, 
     // WE JUST NEED TO SEE IF THEYRE ALREADY ALIGNED. IF NOT, END THE PROGRAM.
+    if (!checkCommonDates(stock_universe))
+    {
+        cerr << "Size of common dates is smaller. Stopping program." << endl;
+        return 1;
+    }
 
 
     // === TASK 3: Calculate per-stock statistics on raw prices ===
@@ -96,7 +101,7 @@ int main(void)
         {
             double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
 
-            if(pow(abs(corr_coeff), 2) >= 0.7)
+            if(pow(corr_coeff, 2) >= 0.7)
             {
                 // TASK 6 linearRegression(log prices of both stocks)
             }

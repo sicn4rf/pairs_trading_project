@@ -68,18 +68,46 @@ bool readCSV(const string& file_name, StockData& temp_stock)
 // === TASK 2: Implement alignDates() ===
 // Takes all StockData objects and finds common dates shared across all stocks.
 // Uses std::set and set_intersection() to compute the intersection.
-set<string> alignDates(...) 
-{
-
-}
-
+// set<string> alignDates(...) {}
 // NOT NEEDED FOR NOW SINCE WE DONT NEED TO ALIGN DATES^^^
 
 //INSTEAD IMPLEMENT A FUNCTION THAT CHECKS IF ALL STOCKS ARE ALREADY ALIGNED, checkCommonDates()
 // CHECK EACH DATE VECTOR OF STRINGS AND SEE THEY HAVE THE SAME VALUES AND SIZES
 bool checkCommonDates(const vector<StockData>& stock_objects) 
 {
+    // First, find common_dates:
+    // Set common_dates as the first StockData's date so that the loop will work.
+    vector<string> common_dates = stock_objects[0].dates;
 
+    // Iterate through each stock in stock_universe to compute intersection of all stock dates.
+    for (const StockData& current_stock : stock_objects)
+    {
+        // temp_dates will store the current iteration's resulting intersection.
+        vector<string> temp_dates;
+
+        // Some notes about back_inserter():
+        // back_inserter does not replace the contents of the vector, but appends it.
+        set_intersection(current_stock.dates.begin(), current_stock.dates.end(), common_dates.begin(), common_dates.end(), back_inserter(temp_dates));
+        
+        // replace all of common_date's elements with temp_dates --> temp_dates will be wiped in the next iteration
+        common_dates = temp_dates;
+    }
+
+    // Second, check if common_dates guarantees alignment:
+    // If the size doesn't match, guarantees not aligned --> immediately return false;
+    // In fact, we only need to worry about the size
+    // Taking the intersection of all sets, common_date therefore contains what everyone shares.
+    // Explanation:
+    // If, at any time, any of the sizes of the stocks don't match the size of the common_date, that means there are more dates
+    // that that stock has. Therefore, we only need to check if the sizes match, and do not have to iterate through every entry of
+    // date that is in the .dates() vectors.
+    for (int i = 0; i < stock_objects.size(); i++)
+    {
+        if (common_dates.size() < stock_objects[i].dates.size())
+            return false;
+    }
+
+    return true;
 }
 
 
@@ -101,10 +129,14 @@ vector<double> extractAlignedPrices(StockData& stock_object,)
 // Takes a vector of log_prices and computes log returns:
 // log_return[i] = log_price[i] - log_price[i-1]
 // First value skipped (since no previous price).
-vector<double> computeLogReturns(...) 
+void computeLogReturns(StockData& stock_object) 
 {
-
-}
+    for (int i = 1; i < stock_object.log_prices.size(); i++)
+    {
+        stock_object.log_returns.push_back(stock_object.log_prices[i] - stock_object.log_prices[i-1]);
+    }
+    // end
+} 
 
 
 
@@ -132,10 +164,22 @@ double mean(const vector<double>& stock_values)
 
 
 // === TASK 6: Implement variance() ===
-// Takes a vector<double> and its mean, computes variance.
-double variance(...) 
+// Takes a vector<double> and its mean, computes sample variance.
+double variance(const vector<double>& stock_values) 
 {
+    double avg = mean(stock_values);
 
+    double var = 0.0;
+
+    // Summation of (X_i - X_bar) ^ 2
+    for (double current_stock_value : stock_values)
+    {
+        var += pow((current_stock_value - avg),2);
+    }
+
+    var /= stock_values.size() - 1;
+
+    return var;
 }
 
 
@@ -156,9 +200,20 @@ double stddev(vector<double>& stock_values, double mean_value)
 // === TASK 8: Implement iqr() ===
 // Takes a vector<double>, sorts it, and computes interquartile range.
 // IQR = Q3 - Q1
-double iqr(...) 
+double iqr(const vector<double>& stock_values) 
 {
+    // Create copy 
+    vector<double> copy_vector = stock_values;
 
+    // Sort the values in ascending order
+    sort(copy_vector.begin(), copy_vector.end());
+
+    // Find Q1 and Q3's indices
+    int quarter1_index = stock_values.size()/4;
+    int quarter3_index = 3 * quarter1_index;
+
+    // IQR == Q3 - Q1
+    return stock_values[quarter3_index] - stock_values[quarter1_index];
 }
 
 
@@ -191,9 +246,25 @@ double spread(vector<double>& stock_values)
 
 // === TASK 10: Implement pearsonCorrelation() ===
 // Takes two vectors of log returns, computes Pearson correlation coefficient.
-double pearsonCorrelation(...) 
+double pearsonCorrelation(const vector<double>& log_returnX, const vector<double>& log_returnY) 
 {
+    // Compute mean of X and Y, which we will call X_bar and Y_bar respectively
+    double x_bar = mean(log_returnX), y_bar = mean(log_returnY);
 
+    double numerator=0, denominator1=0, denominator2=0;
+
+    for (int i = 0; i < log_returnX.size(); i++)
+    {
+        double xi_minus_xbar = log_returnX[i] - x_bar;
+        double yi_minus_ybar = log_returnY[i] - y_bar;
+
+        numerator += xi_minus_xbar * yi_minus_ybar;
+        denominator1 += pow(xi_minus_xbar, 2);
+        denominator2 += pow(yi_minus_ybar, 2);
+    }
+
+    // return r (correl coeff)
+    return numerator / ( sqrt(denominator1 * denominator2) );
 }
 
 
@@ -204,8 +275,7 @@ double pearsonCorrelation(...)
 // - alpha
 // - residuals for each point
 // Follows OLS regression formulas.
-void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY,
-                    double& refAlpha, double& refBeta, vector<double>& refResiduals) 
+void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, vector<double>& refResiduals) 
 {
     // Declare mean values for stocks X and Y
     double mean_stockX = mean(stock_valuesX);
@@ -225,8 +295,8 @@ void linearRegression(const vector<double>& stock_valuesX, const vector<double>&
         denominator += pow((stock_valuesX[i] - mean_stockX), 2);
     }
 
-    refBeta = numerator / denominator;
-    refAlpha = mean_stockY - (refBeta * mean_stockX);
+    double refBeta = numerator / denominator;
+    double refAlpha = mean_stockY - (refBeta * mean_stockX);
 
     // Loop through every value in the pair of stocks and use alpha and beta to calculate residuals
     // Store these residuals in a vector
@@ -243,7 +313,39 @@ void linearRegression(const vector<double>& stock_valuesX, const vector<double>&
 // === TASK 12: Implement exportResidualCSV() ===
 // Writes CSV file for a valid pair:
 // Columns: Date, Stock1 log price, Stock2 log price, Residual.
-void exportResidualCSV(...) 
+// filename includes path and .csv
+void exportResidualCSV(const string& filename, const vector<string>& dates, const vector<double>& log_priceX, const vector<double>& log_priceY) 
 {
+    // Re-extract ticker name from 'filename'
+    size_t start_pos = filename.find_last_of('/') + 1;      // after '/'
+    size_t end_pos = filename.find(".csv");                 // start of ".csv"
+    size_t length = end_pos - start_pos;                    // number of characters between
 
+    string cleaner_string = filename.substr(start_pos, length);  // "XXXX_YYYY"
+    string ticker1 = cleaner_string.substr(0, cleaner_string.find('_'));
+    string ticker2 = cleaner_string.substr(cleaner_string.find('_') + 1);
+    
+    // Compute residuals
+    vector<double> residuals;
+    linearRegression(log_priceX, log_priceY, residuals);
+
+    // Output stream create
+    ofstream outfile(filename);
+    if (!outfile.is_open()) 
+    {
+        cerr << "Error: Could not open file - " << filename << " for writing.\n";
+        return;
+    }   
+
+
+    // Header Row
+    //           1                 2                           3               4
+    outfile << "Date," << ticker1 << " Log Price," << ticker2 << " Log Price,Residual\n";
+
+    for (int i = 0; i < log_priceX.size(); i++)
+    {
+        outfile << dates[i] << ',' << log_priceX[i] << ',' << log_priceY[i] << ',' << residuals[i] << '\n';
+    }
+
+    outfile.close();
 }
