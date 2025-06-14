@@ -165,16 +165,14 @@ double mean(const vector<double>& stock_values)
 
 // === TASK 6: Implement variance() ===
 // Takes a vector<double> and its mean, computes sample variance.
-double variance(const vector<double>& stock_values) 
+double variance(const vector<double>& stock_values, double mean_value) 
 {
-    double avg = mean(stock_values);
-
     double var = 0.0;
 
     // Summation of (X_i - X_bar) ^ 2
     for (double current_stock_value : stock_values)
     {
-        var += pow((current_stock_value - avg),2);
+        var += pow((current_stock_value - mean_value),2);
     }
 
     var /= stock_values.size() - 1;
@@ -193,7 +191,7 @@ double stddev(vector<double>& stock_values, double mean_value)
         return 0; // Return 0 if the vector is empty to avoid division by zero
     }
 
-    return sqrt(variance(stock_values)); // Standard deviation is the square root of variance
+    return sqrt(variance(stock_values, mean_value)); // Standard deviation is the square root of variance
 }
 
 

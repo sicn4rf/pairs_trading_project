@@ -66,17 +66,17 @@ int main(void)
     {
         // Calculate statistics for the current stock's raw_prices
         // Assuming raw_prices is already aligned with the common dates
-        double mean = mean(current_stock.raw_prices);
-        double variance = variance(current_stock.raw_prices, mean);
-        double stddev = stddev(current_stock.raw_prices, mean);
+        double mean_value = mean(current_stock.raw_prices);
+        double variance_value = variance(current_stock.raw_prices, mean_value);
+        double stddev_value = stddev(current_stock.raw_prices, mean_value);
         double iqr_value = iqr(current_stock.raw_prices);
         double spread_value = spread(current_stock.raw_prices);
 
         // Output the statistics to a text file named after the stock ticker
         results_file << "Ticker: " << current_stock.ticker_name << endl;
-        results_file << "Mean: " << mean << endl;
-        results_file << "Variance: " << variance << endl;
-        results_file << "Standard Deviation: " << stddev << endl;
+        results_file << "Mean: " << mean_value << endl;
+        results_file << "Variance: " << variance_value << endl;
+        results_file << "Standard Deviation: " << stddev_value << endl;
         results_file << "IQR: " << iqr_value << endl;
         results_file << "Spread: " << spread_value << endl;
         results_file << "----------------------------------------" << endl;

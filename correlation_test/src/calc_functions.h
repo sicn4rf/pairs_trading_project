@@ -15,11 +15,6 @@
 using namespace std;
 
 // === TASK 1: Define StockData struct ===
-// struct StockData {
-//     vector<string> dates;
-//     vector<double> raw_prices;
-//     vector<double> log_prices;
-// };
 
 struct StockData
 {
@@ -32,21 +27,18 @@ struct StockData
 
 // === TASK 2: Declare all function prototypes ===
 // Declare functions for:
-// - bool readCSV(const string&, StockData&);
+bool readCSV(const string& file_name, StockData& temp_stock);
+bool checkCommonDates(const vector<StockData>& stock_objects);
+void computeLogReturns(StockData& stock_object);
+double mean(const vector<double>& stock_values);
+double variance(const vector<double>& stock_values, double mean_value);
+double stddev(const vector<double>& stock_values, double mean_value);
+double iqr(vector<double> stock_values);
+double spread(const vector<double>& stock_values);
+double pearsonCorrelation(const vector<double>& log_returnX, const vector<double>& log_returnY);
+void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, vector<double>& refResiduals);
+void exportResidualCSV(const string& filename, const vector<string>& dates, const vector<double>& log_priceX, const vector<double>& log_priceY);
+
 // - set<string> alignDates(const vector<StockData>&);
 // - vector<double> extractAlignedPrices(const StockData&, const set<string>&, bool useLog);
-// - vector<double> computeLogReturns(const vector<double>&);
-// - double mean(const vector<double>&);
-// - double variance(const vector<double>&, double);
-// - double stddev(const vector<double>&, double);
-// - double iqr(vector<double>);
-// - double spread(const vector<double>&);
-// - double pearsonCorrelation(const vector<double>&, const vector<double>&);
-// - void linearRegression(const vector<double>&, const vector<double>&, double&, double&, vector<double>&);
-// - void exportResidualCSV(...);
 
-// === TASK 3: Include standard libraries and namespace ===
-// Include necessary headers:
-// <iostream>, <fstream>, <sstream>, <vector>, <string>, <cmath>, <algorithm>, <set>, <map>
-// Use include guards (#pragma once or #ifndef ... #endif).
-// Declare 'using namespace std;' or qualify with std::
