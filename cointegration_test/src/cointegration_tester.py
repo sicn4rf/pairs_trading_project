@@ -16,6 +16,7 @@ from statsmodels import adfuller
 # ======================
 
 # Task 2: Set the directory path where your residual CSV files are stored.
+residual_directory = "../../correlation_test/pairs/"
 
 
 # ======================
@@ -25,16 +26,13 @@ from statsmodels import adfuller
 # Task 3: Loop through all files in the directory
 
 # listdir is like saying "ls" in your terminal and then we can store all those files in a list
+
 file_list = os.listdir(data_directory)
 
 for file_name in file_list:
 
     # Task 3a: Check if file ends with '_residuals.csv' (only process residual files)
-
-    # Just check if the file ends with this naming convention
-    if file_name.endswith("_residuals.csv"):
-
-
+    if file_name.endswith("_residuals.csv") :
         # Task 3b: Build full file path using os.path.join
 
         # this links the two strings together like for example
@@ -49,6 +47,8 @@ for file_name in file_list:
 
         # Task 4: Extract stock1 and stock2 names from filename
         # Hint: remove '_residuals.csv' suffix, then split by '_'
+        current_stock_pair = file_name.replace("_residuals.csv", "")
+        stock1, stock2 = current_stock_pair.split("_")
 
         # ======================
         # READ CSV FILE
@@ -57,22 +57,25 @@ for file_name in file_list:
         # Task 5a: Read CSV file into pandas dataframe
 
         # Read currentl file into a data fram
+
         data_frame = pd.read_csv(file_path)
 
 
         # Task 5b: Extract 'Residual' column and drop any missing (NaN) values
 
         # this lets you store the column of residuals into a 1D array
-        residuals = data_frame['Residuals']
+
+        residuals = data_frame['Residual']
 
         # ======================
         # RUN ADF TEST
         # ======================
 
         # Task 6a: Run Augmented Dickey-Fuller test on residuals
+        adf_result = adfuller(residuals)
 
         # Task 6b: Extract p-value from the test result
-
+        p_val = adf_result[1]
 
         # ======================
         # OUTPUT RESULTS
