@@ -90,6 +90,10 @@ int main(void)
     // === TASK 4: Calculate log returns for each stock ===
     // - Compute log returns by subtracting previous day's log price.
     // - Store log returns for correlation calculations. (STORE IN VECTOR STOCK DATA OBJECT)
+    for (StockData current_stock : stock_universe)
+    {
+        computeLogReturns(current_stock);
+    }
 
     // === TASK 5: Compute Pearson correlation for all stock pairs ===
     // Loop through all 45 unique stock pairs:
@@ -104,6 +108,11 @@ int main(void)
             if(pow(corr_coeff, 2) >= 0.7)
             {
                 // TASK 6 linearRegression(log prices of both stocks)
+                vector<double> current_residuals;
+                linearRegression(stock_universe[i].log_prices, stock_universe[j].log_prices, current_residuals);
+
+                string filename = "../pairs/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + ".csv";
+                exportResidualCSV(filename, stock_universe[i].dates, stock_universe[i].log_prices, stock_universe[j].log_prices);
             }
         }
     }
@@ -113,6 +122,10 @@ int main(void)
     // - Compute beta, alpha, and residuals from the regression of log prices.
     // - Export the results into a CSV file with columns: Date, Stock1 Price, Stock2 Price, Residual.
 
+    // This loop is able to find all combinations of pairs of stocks
+
     // === TASK 7: Complete program and wrap up ===
     // Ensure all files are properly closed, and print any summary or status messages.
+    printf("Program has finished running.");
+    return 0;
 }
