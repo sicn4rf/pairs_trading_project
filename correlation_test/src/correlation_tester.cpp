@@ -9,7 +9,7 @@ int main(void)
     
     // Declare a vector of ticker names along with an empty vector of StockData objects where we shall store
     // an object storing the data from the .csv files of every ticker we have.
-    vector<string> tickers = {TECH};
+    vector<string> tickers = {NRG};
     vector<StockData> stock_universe;
 
 

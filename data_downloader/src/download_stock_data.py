@@ -6,7 +6,7 @@ from ticker_macros import SECTORS
 
 
 # This creates a literal list of 10 big tech company tickers that we want to analyze
-tickers = SECTORS['TECH']
+tickers = SECTORS['NRG']
 
 # Creating two datetime objects using the datetime library. End date being current date
 # and start date being 365 days ago. we do this using .today() and timedelta() functions
