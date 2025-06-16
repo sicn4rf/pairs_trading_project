@@ -38,7 +38,7 @@ for tick in tickers:
     data_frame.index = data_frame.index.date
     
     # Use pandas to store the historical data from the data frame into a .csv file, index_label="Date" means that the index of the data frame will be used as the first column in the csv file
-    data_frame.to_csv(f"../data/{tick}.csv", index_label="Date")
+    data_frame.to_csv(f"../../data/raw/{tick}.csv", index_label="Date")
 
 print("Done collecting data.")
 

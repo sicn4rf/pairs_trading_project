@@ -16,7 +16,7 @@ from statsmodels.tsa.stattools import adfuller
 # ======================
 
 # Task 2: Set the directory path where your residual CSV files are stored.
-data_directory = "../../correlation_test/pairs/"
+data_directory = "../../data/processed"
 
 
 # ======================
@@ -32,7 +32,7 @@ file_list = os.listdir(data_directory)
 for file_name in file_list:
 
     # Task 3a: Check if file ends with '_residuals.csv' (only process residual files)
-    if file_name.endswith("_residuals.csv") :
+    if file_name.endswith(".csv") :
         # Task 3b: Build full file path using os.path.join
 
         # this links the two strings together like for example
@@ -47,7 +47,7 @@ for file_name in file_list:
 
         # Task 4: Extract stock1 and stock2 names from filename
         # Hint: remove '_residuals.csv' suffix, then split by '_'
-        current_stock_pair = file_name.replace("_residuals.csv", "")
+        current_stock_pair = file_name.replace(".csv", "")
         stock1, stock2 = current_stock_pair.split("_")
 
         # ======================
@@ -84,7 +84,7 @@ for file_name in file_list:
         # Task 7: Apply decision rule and print formatted result to screen AND final_results.txt in final_results directory
 
         if p_val < 0.05:
-            print(f"{stock1} and {stock2} are likely cointegrated. p-value is {p_val:.4f}")
+            print(f"{stock1} and {stock2} are LIKELY cointegrated. p-value is {p_val:.4f}\n")
         else:
-            print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}")
+            print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}\n")
 

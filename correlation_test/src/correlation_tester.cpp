@@ -1,5 +1,5 @@
 #include "calc_functions.h"
-
+#include "ticker_macros.h"
 
 int main(void)
 {
@@ -9,7 +9,7 @@ int main(void)
     
     // Declare a vector of ticker names along with an empty vector of StockData objects where we shall store
     // an object storing the data from the .csv files of every ticker we have.
-    vector<string> tickers = {"AAPL", "MSFT", "AMZN", "GOOG", "META", "NVDA", "TSLA", "INTC", "CSCO", "ORCL"};
+    vector<string> tickers = {TECH};
     vector<StockData> stock_universe;
 
 
@@ -23,7 +23,7 @@ int main(void)
         // current temporary object into our stock_universe vector. readCSV takes in 2 arguments, a string
         // file name which will be used to open our filestream to read from and a StockData object which will
         // be passed by reference
-        if(readCSV("../../data_downloader/data/" + current_ticker + ".csv", temp_object) == true)
+        if(readCSV("../../data/raw/" + current_ticker + ".csv", temp_object) == true)
         {
             // set temp_objects ticker to be the name of the current ticker
             temp_object.ticker_name = current_ticker;
@@ -56,13 +56,13 @@ int main(void)
     string filepath1 = "../results";
 
     // Delete pairs if it exists
-    if (fs::exists(filepath1))
+    if (std::__fs::filesystem::exists(filepath1))
     {
-        fs::remove_all(filepath1);
+        std::__fs::filesystem::remove_all(filepath1);
     }
 
     // Create new pairs
-    fs::create_directory(filepath1);
+    std::__fs::filesystem::create_directory(filepath1);
 
     // Open a results file to write the statistics
     ofstream results_file("../results/results.txt");
@@ -115,13 +115,13 @@ int main(void)
     string filepath2 = "../../data/processed";
 
     // Delete pairs if it exists
-    if (fs::exists(filepath2))
+    if (std::__fs::filesystem::exists(filepath2))
     {
-        fs::remove_all(filepath2);
+        std::__fs::filesystem::remove_all(filepath2);
     }
 
     // Create new pairs
-    fs::create_directory(filepath2);
+    std::__fs::filesystem::create_directory(filepath2);
 
 
     // Pearson Correlation
@@ -137,7 +137,7 @@ int main(void)
                 vector<double> current_residuals;
                 linearRegression(stock_universe[i].log_prices, stock_universe[j].log_prices, current_residuals);
 
-                string filename = "../pairs/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + "_residuals.csv";
+                string filename = "../../data/processed/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + ".csv";
                 exportResidualCSV(filename, stock_universe[i].dates, stock_universe[i].log_prices, stock_universe[j].log_prices);
             }
         }
