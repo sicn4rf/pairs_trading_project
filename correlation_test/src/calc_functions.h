@@ -11,7 +11,9 @@
 #include <algorithm>
 #include <set>
 #include <map>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 using namespace std;
 
 // === TASK 1: Define StockData struct ===

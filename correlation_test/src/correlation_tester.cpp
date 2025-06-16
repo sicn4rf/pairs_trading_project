@@ -52,6 +52,18 @@ int main(void)
     // - Compute mean, variance, standard deviation, IQR, and spread (range).
     // - Output these statistics into a .txt file.
 
+    // Edit directory (Delete pairs folder)
+    string filepath1 = "../results";
+
+    // Delete pairs if it exists
+    if (fs::exists(filepath1))
+    {
+        fs::remove_all(filepath1);
+    }
+
+    // Create new pairs
+    fs::create_directory(filepath1);
+
     // Open a results file to write the statistics
     ofstream results_file("../results/results.txt");
     if(!results_file.is_open())
@@ -94,9 +106,25 @@ int main(void)
     }
 
     // === TASK 5: Compute Pearson correlation for all stock pairs ===
+    // Delete 'pairs' folder, and make new 'pairs' folder (to make sure previous .csv's are gone)
     // Loop through all 45 unique stock pairs:
     // - For each pair, compute Pearson correlation using their log returns.
     // - If absolute correlation >= 0.7, consider this pair valid for cointegration.
+
+    // Edit directory (Delete pairs folder)
+    string filepath2 = "../../data/processed";
+
+    // Delete pairs if it exists
+    if (fs::exists(filepath2))
+    {
+        fs::remove_all(filepath2);
+    }
+
+    // Create new pairs
+    fs::create_directory(filepath2);
+
+
+    // Pearson Correlation
     for(int i = 0; i < stock_universe.size() - 1; i++)
     {
         for(int j = i + 1; j < stock_universe.size(); j++)
