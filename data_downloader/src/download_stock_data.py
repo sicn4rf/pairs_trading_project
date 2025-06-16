@@ -13,7 +13,7 @@ tickers = SECTORS['TECH']
 end_date = datetime.today()
 start_date = "2025-01-01"
 
-folder = '../data'
+folder = '../../data/raw'
 
 if os.path.exists(folder):
     shutil.rmtree(folder)
