@@ -109,7 +109,7 @@ int main(void)
                 vector<double> current_residuals;
                 linearRegression(stock_universe[i].log_prices, stock_universe[j].log_prices, current_residuals);
 
-                string filename = "../pairs/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + ".csv";
+                string filename = "../pairs/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + "_residuals.csv";
                 exportResidualCSV(filename, stock_universe[i].dates, stock_universe[i].log_prices, stock_universe[j].log_prices);
             }
         }

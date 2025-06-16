@@ -23,14 +23,26 @@ from statsmodels import adfuller
 # ======================
 
 # Task 3: Loop through all files in the directory
+
+# listdir is like saying "ls" in your terminal and then we can store all those files in a list
 file_list = os.listdir(data_directory)
 
 for file_name in file_list:
 
     # Task 3a: Check if file ends with '_residuals.csv' (only process residual files)
-    if file_name.endswith("_residuals.csv") :
+
+    # Just check if the file ends with this naming convention
+    if file_name.endswith("_residuals.csv"):
+
+
         # Task 3b: Build full file path using os.path.join
+
+        # this links the two strings together like for example
+        # data_directory is: "../../correlation_tester/pairs" and file_name is "MSFT_AMZN_residuals.csv"
+        # file_path would be ../../correlation_tester/pairs/MSFT_AMZN_residuals"
         file_path = os.path.join(data_directory, file_name)
+
+
         # ======================
         # PARSE STOCK NAMES
         # ======================
@@ -44,11 +56,13 @@ for file_name in file_list:
 
         # Task 5a: Read CSV file into pandas dataframe
 
+        # Read currentl file into a data fram
         data_frame = pd.read_csv(file_path)
 
 
         # Task 5b: Extract 'Residual' column and drop any missing (NaN) values
 
+        # this lets you store the column of residuals into a 1D array
         residuals = data_frame['Residuals']
 
         # ======================
@@ -66,7 +80,7 @@ for file_name in file_list:
 
         # Task 7: Apply decision rule and print formatted result to screen AND final_results.txt in final_results directory
 
-        if p_val < 0.05
+        if p_val < 0.05:
             print(f"{stock1} and {stock2} are likely cointegrated. p-value is {p_val:.4f}")
-        else
+        else:
             print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}")
