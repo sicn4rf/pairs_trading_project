@@ -1,5 +1,7 @@
-/data_downloader/data/*.csv
+/data/raw/*.csv
+/data/processed/*.csv
 /correlation_test/results/*
 /correlation_test/pairs/*
-__pycache__/
+/correlation_test/src/a.out
+/data_downloader/__pycache__/
 *.pyc
