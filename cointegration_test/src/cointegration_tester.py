@@ -6,13 +6,9 @@
 # ======================
 
 # Task 1a: Import os (used for directory/file handling)
-
-
-# Task 1b: Import pandas (used for CSV reading and dataframe manipulation)
-
-
-# Task 1c: Import adfuller function from statsmodels (used for ADF stationarity test)
-
+import os
+import pandas as pd
+from statsmodels import adfuller
 
 
 # ======================
@@ -27,11 +23,14 @@
 # ======================
 
 # Task 3: Loop through all files in the directory
+file_list = os.listdir(data_directory)
+
+for file_name in file_list:
 
     # Task 3a: Check if file ends with '_residuals.csv' (only process residual files)
-
+    if file_name.endswith("_residuals.csv") :
         # Task 3b: Build full file path using os.path.join
-
+        file_path = os.path.join(data_directory, file_name)
         # ======================
         # PARSE STOCK NAMES
         # ======================
@@ -45,8 +44,12 @@
 
         # Task 5a: Read CSV file into pandas dataframe
 
+        data_frame = pd.read_csv(file_path)
+
 
         # Task 5b: Extract 'Residual' column and drop any missing (NaN) values
+
+        residuals = data_frame['Residuals']
 
         # ======================
         # RUN ADF TEST
@@ -62,3 +65,8 @@
         # ======================
 
         # Task 7: Apply decision rule and print formatted result to screen AND final_results.txt in final_results directory
+
+        if p_val < 0.05
+            print(f"{stock1} and {stock2} are likely cointegrated. p-value is {p_val:.4f}")
+        else
+            print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}")
