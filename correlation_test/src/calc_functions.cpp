@@ -184,7 +184,7 @@ double variance(const vector<double>& stock_values, double mean_value)
 
 // === TASK 7: Implement stddev() ===
 // Takes a vector<double> and its mean, returns standard deviation.
-double stddev(vector<double>& stock_values, double mean_value) 
+double stddev(const vector<double>& stock_values, double mean_value) 
 {
     if(stock_values.empty())
     {
@@ -211,14 +211,14 @@ double iqr(const vector<double>& stock_values)
     int quarter3_index = 3 * quarter1_index;
 
     // IQR == Q3 - Q1
-    return stock_values[quarter3_index] - stock_values[quarter1_index];
+    return copy_vector[quarter3_index] - copy_vector[quarter1_index];
 }
 
 
 
 // === TASK 9: Implement spread() ===
 // Takes a vector<double>, returns (max - min).
-double spread(vector<double>& stock_values) 
+double spread(const vector<double>& stock_values) 
 {
     double min = stock_values[0];
     double max = stock_values[0];

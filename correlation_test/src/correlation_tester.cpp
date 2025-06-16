@@ -33,8 +33,6 @@ int main(void)
     }
     // End of task 1
 
-
-
     // === TASK 2: Align dates across all stocks ===
     // Build a master set of common dates that exist across all 10 stocks.
     // Use set intersection to ensure perfect alignment of dates.
@@ -90,7 +88,7 @@ int main(void)
     // === TASK 4: Calculate log returns for each stock ===
     // - Compute log returns by subtracting previous day's log price.
     // - Store log returns for correlation calculations. (STORE IN VECTOR STOCK DATA OBJECT)
-    for (StockData current_stock : stock_universe)
+    for (StockData& current_stock : stock_universe)
     {
         computeLogReturns(current_stock);
     }
@@ -101,11 +99,11 @@ int main(void)
     // - If absolute correlation >= 0.7, consider this pair valid for cointegration.
     for(int i = 0; i < stock_universe.size() - 1; i++)
     {
-        for(int j = i + 1; i < stock_universe.size(); i++)
+        for(int j = i + 1; j < stock_universe.size(); j++)
         {
             double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
 
-            if(pow(corr_coeff, 2) >= 0.7)
+            if(corr_coeff >= 0.7)
             {
                 // TASK 6 linearRegression(log prices of both stocks)
                 vector<double> current_residuals;

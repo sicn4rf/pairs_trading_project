@@ -33,7 +33,7 @@ void computeLogReturns(StockData& stock_object);
 double mean(const vector<double>& stock_values);
 double variance(const vector<double>& stock_values, double mean_value);
 double stddev(const vector<double>& stock_values, double mean_value);
-double iqr(vector<double> stock_values);
+double iqr(const vector<double>& stock_values);
 double spread(const vector<double>& stock_values);
 double pearsonCorrelation(const vector<double>& log_returnX, const vector<double>& log_returnY);
 void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, vector<double>& refResiduals);
