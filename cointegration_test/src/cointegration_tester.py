@@ -8,7 +8,7 @@
 # Task 1a: Import os (used for directory/file handling)
 import os
 import pandas as pd
-from statsmodels import adfuller
+from statsmodels.tsa.stattools import adfuller
 
 
 # ======================
@@ -16,7 +16,7 @@ from statsmodels import adfuller
 # ======================
 
 # Task 2: Set the directory path where your residual CSV files are stored.
-residual_directory = "../../correlation_test/pairs/"
+data_directory = "../../correlation_test/pairs/"
 
 
 # ======================
@@ -87,3 +87,4 @@ for file_name in file_list:
             print(f"{stock1} and {stock2} are likely cointegrated. p-value is {p_val:.4f}")
         else:
             print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}")
+

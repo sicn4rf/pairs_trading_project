@@ -1,17 +1,25 @@
 import yfinance as yf
 import pandas as pd
+import os, shutil
 from datetime import datetime, timedelta
 from ticker_macros import SECTORS
 
 
 # This creates a literal list of 10 big tech company tickers that we want to analyze
-tickers = 'TECH'
+tickers = SECTORS['TECH']
 
 # Creating two datetime objects using the datetime library. End date being current date
 # and start date being 365 days ago. we do this using .today() and timedelta() functions
 end_date = datetime.today()
 start_date = "2025-01-01"
 
+folder = '../data'
+
+if os.path.exists(folder):
+    shutil.rmtree(folder)
+    os.makedirs(folder)
+else:
+    os.makedirs(folder)
 
 print("Gathering data from yfinance...")
 
