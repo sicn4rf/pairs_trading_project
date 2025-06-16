@@ -37,8 +37,8 @@ double stddev(const vector<double>& stock_values, double mean_value);
 double iqr(const vector<double>& stock_values);
 double spread(const vector<double>& stock_values);
 double pearsonCorrelation(const vector<double>& log_returnX, const vector<double>& log_returnY);
-void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, vector<double>& refResiduals);
-void exportResidualCSV(const string& filename, const vector<string>& dates, const vector<double>& log_priceX, const vector<double>& log_priceY);
+void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, double& refBeta, vector<double>& refResiduals);
+void exportResidualCSV(const string& filename, const StockData& stock_objectX, const StockData& stock_objectY);
 
 // - set<string> alignDates(const vector<StockData>&);
 // - vector<double> extractAlignedPrices(const StockData&, const set<string>&, bool useLog);

@@ -131,15 +131,25 @@ int main(void)
         {
             double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
 
+            // Create two folders
+            std::__fs::filesystem::create_directory(filepath2 + "/successes/");
+            std::__fs::filesystem::create_directory(filepath2 + "/failures/");
+
             if(corr_coeff >= 0.7)
             {
-                // TASK 6 linearRegression(log prices of both stocks)
-                vector<double> current_residuals;
-                linearRegression(stock_universe[i].log_prices, stock_universe[j].log_prices, current_residuals);
+                // TASK 6 linearRegression(log prices of both stocks; also store in proper folder based on correlation)
+                //vector<double> current_residuals;
+                //linearRegression(stock_universe[i].log_prices, stock_universe[j].log_prices, current_residuals);
 
-                string filename = "../../data/processed/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + ".csv";
-                exportResidualCSV(filename, stock_universe[i].dates, stock_universe[i].log_prices, stock_universe[j].log_prices);
+                string filename = "../../data/processed/successes/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + ".csv";
+                exportResidualCSV(filename, stock_universe[i], stock_universe[j]);
             }
+            else
+            {
+                string filename = "../../data/processed/failures/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + ".csv";
+                exportResidualCSV(filename, stock_universe[i], stock_universe[j]);
+            }
+
         }
     }
 

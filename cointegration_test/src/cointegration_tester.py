@@ -9,6 +9,7 @@
 import os
 import pandas as pd
 from statsmodels.tsa.stattools import adfuller
+import shutil
 
 
 # ======================
@@ -27,18 +28,19 @@ data_directory = "../../data/processed"
 
 # listdir is like saying "ls" in your terminal and then we can store all those files in a list
 
-file_list = os.listdir(data_directory)
+success_dir = os.path.join(data_directory, "successes")
+failure_dir = os.path.join(data_directory, "failures")
 
-for file_name in file_list:
-
-    # Task 3a: Check if file ends with '_residuals.csv' (only process residual files)
-    if file_name.endswith(".csv") :
+# This function allows us to process both the successes and failures directories by defining the process as a function.
+def process_csv(file_path, file_name, isSuccess):
+    # Task 3a: Check if file ends with '.csv' (only process residual files)
+    if file_name.endswith(".csv"):
         # Task 3b: Build full file path using os.path.join
 
         # this links the two strings together like for example
         # data_directory is: "../../correlation_tester/pairs" and file_name is "MSFT_AMZN_residuals.csv"
         # file_path would be ../../correlation_tester/pairs/MSFT_AMZN_residuals"
-        file_path = os.path.join(data_directory, file_name)
+        file_path = os.path.join(file_path, file_name)
 
 
         # ======================
@@ -77,14 +79,26 @@ for file_name in file_list:
         # Task 6b: Extract p-value from the test result
         p_val = adf_result[1]
 
+        # Task 6c: Add p-value column to .csv file
+        # NOT DONE ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– (!!!)
+
         # ======================
         # OUTPUT RESULTS
         # ======================
 
         # Task 7: Apply decision rule and print formatted result to screen AND final_results.txt in final_results directory
+        if isSuccess:
+            if p_val < 0.05:
+                print(f"{stock1} and {stock2} are LIKELY cointegrated. p-value is {p_val:.4f}\n")
+            else:
+                print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}\n")
 
-        if p_val < 0.05:
-            print(f"{stock1} and {stock2} are LIKELY cointegrated. p-value is {p_val:.4f}\n")
-        else:
-            print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}\n")
+                # shutil library allows us to move files (less error prone than os library)
+                shutil.move(file_path, f"../../data/processed/failures/{file_name}")
 
+
+# Runs process_csv() function and processes .csv's in both directories
+for file_name in os.listdir(failure_dir):
+    process_csv(failure_dir, file_name, isSuccess=False)
+for file_name in os.listdir(success_dir):
+    process_csv(success_dir, file_name, isSuccess=True)

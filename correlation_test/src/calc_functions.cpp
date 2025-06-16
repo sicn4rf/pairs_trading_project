@@ -273,7 +273,7 @@ double pearsonCorrelation(const vector<double>& log_returnX, const vector<double
 // - alpha
 // - residuals for each point
 // Follows OLS regression formulas.
-void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, vector<double>& refResiduals) 
+void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, double& refBeta, vector<double>& refResiduals) 
 {
     // Declare mean values for stocks X and Y
     double mean_stockX = mean(stock_valuesX);
@@ -293,39 +293,48 @@ void linearRegression(const vector<double>& stock_valuesX, const vector<double>&
         denominator += pow((stock_valuesX[i] - mean_stockX), 2);
     }
 
-    double refBeta = numerator / denominator;
-    double refAlpha = mean_stockY - (refBeta * mean_stockX);
+    refBeta = numerator / denominator;
+    double alpha = mean_stockY - (refBeta * mean_stockX);
 
     // Loop through every value in the pair of stocks and use alpha and beta to calculate residuals
     // Store these residuals in a vector
     for(int i = 0; i < stock_valuesX.size(); i++)
     {
-        residual = stock_valuesY[i] - (refAlpha + (refBeta * stock_valuesX[i]));
+        residual = stock_valuesY[i] - (alpha + (refBeta * stock_valuesX[i]));
 
         refResiduals.push_back(residual);
     }
 }
 
 
+// === TASK 12: Implement calcspread() ===
+// Calculate the spread, which is the absolute value of the difference in raw prices of the first and second stock
+double calcSpread(double stock1_value, double stock2_value)
+{
+    return abs(stock1_value - stock2_value);
+}
 
-// === TASK 12: Implement exportResidualCSV() ===
+
+
+// === TASK 13: Implement exportResidualCSV() ===
 // Writes CSV file for a valid pair:
-// Columns: Date, Stock1 log price, Stock2 log price, Residual.
+// Columns: Date, Stock1 raw price, Stock2 raw price, Stock1 log price, Stock2 log price, Residual, Spread, Beta
 // filename includes path and .csv
-void exportResidualCSV(const string& filename, const vector<string>& dates, const vector<double>& log_priceX, const vector<double>& log_priceY) 
+void exportResidualCSV(const string& filename, const StockData& stock_objectX, const StockData& stock_objectY) 
 {
     // Re-extract ticker name from 'filename'
     size_t start_pos = filename.find_last_of('/') + 1;      // after '/'
     size_t end_pos = filename.find(".csv");                 // start of ".csv"
     size_t length = end_pos - start_pos;                    // number of characters between
 
-    string cleaner_string = filename.substr(start_pos, length);  // "XXXX_YYYY"
+    string cleaner_string = filename.substr(start_pos, length);  // --> "XXXX_YYYY"
     string ticker1 = cleaner_string.substr(0, cleaner_string.find('_'));
     string ticker2 = cleaner_string.substr(cleaner_string.find('_') + 1);
     
     // Compute residuals
     vector<double> residuals;
-    linearRegression(log_priceX, log_priceY, residuals);
+    double beta;
+    linearRegression(stock_objectX.log_prices, stock_objectY.log_prices, beta, residuals);
 
     // Output stream create
     ofstream outfile(filename);
@@ -337,13 +346,32 @@ void exportResidualCSV(const string& filename, const vector<string>& dates, cons
 
 
     // Header Row
-    //           1                 2                           3               4
-    outfile << "Date," << ticker1 << " Log Price," << ticker2 << " Log Price,Residual\n";
+    outfile 
+        << "Date," // 1
+        << ticker1 << " Raw Price," // 2
+        << ticker2 << " Raw Price," // 3
+        << ticker1 << " Log Price," // 4
+        << ticker2 << " Log Price," // 5
+        << "Residual," // 6
+        << "Spread," // 7
+        << "Beta" << endl; // 8
 
-    for (int i = 0; i < log_priceX.size(); i++)
+    for (int i = 0; i < stock_objectX.dates.size(); i++)
     {
-        outfile << dates[i] << ',' << log_priceX[i] << ',' << log_priceY[i] << ',' << residuals[i] << '\n';
+        outfile 
+            << stock_objectX.dates[i] << ',' 
+            << stock_objectX.raw_prices[i] << ',' 
+            << stock_objectY.raw_prices[i] << ',' 
+            << stock_objectX.log_prices[i] << ',' 
+            << stock_objectY.log_prices[i] << ',' 
+            << residuals[i] << ','
+            << calcSpread(stock_objectX.raw_prices[i], stock_objectY.raw_prices[i]) << ','
+            << beta << endl;
     }
 
     outfile.close();
 }
+
+
+
+
