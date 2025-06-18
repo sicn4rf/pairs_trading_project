@@ -1,0 +1,203 @@
+Ticker: AAPL
+Mean: 217.569
+Variance: 306.233
+Standard Deviation: 17.4995
+IQR: 31.9606
+Spread: 74.5822
+----------------------------------------
+Ticker: MSFT
+Mean: 415.026
+Variance: 1042.57
+Standard Deviation: 32.2888
+IQR: 54.3716
+Spread: 125.23
+----------------------------------------
+Ticker: GOOG
+Mean: 173.866
+Variance: 226.841
+Standard Deviation: 15.0612
+IQR: 24.0382
+Spread: 60.8205
+----------------------------------------
+Ticker: META
+Mean: 624.309
+Variance: 3567.02
+Standard Deviation: 59.7246
+IQR: 80.7229
+Spread: 251.162
+----------------------------------------
+Ticker: AMZN
+Mean: 206.719
+Variance: 343.98
+Standard Deviation: 18.5467
+IQR: 27.84
+Spread: 74.74
+----------------------------------------
+Ticker: NVDA
+Mean: 124.38
+Variance: 193.505
+Standard Deviation: 13.9106
+IQR: 22.0285
+Spread: 55.1024
+----------------------------------------
+Ticker: TSLA
+Mean: 316.2
+Variance: 3430.8
+Standard Deviation: 58.573
+IQR: 88.44
+Spread: 206.36
+----------------------------------------
+Ticker: NFLX
+Mean: 1023.99
+Variance: 14517.9
+Standard Deviation: 120.49
+IQR: 205.16
+Spread: 422.12
+----------------------------------------
+Ticker: ORCL
+Mean: 157.884
+Variance: 286.393
+Standard Deviation: 16.9232
+IQR: 20.4
+Spread: 92.4
+----------------------------------------
+Ticker: ADBE
+Mean: 408.626
+Variance: 1077.5
+Standard Deviation: 32.8254
+IQR: 52.35
+Spread: 124.11
+----------------------------------------
+Ticker: CRM
+Mean: 290.293
+Variance: 894.986
+Standard Deviation: 29.9163
+IQR: 52.7172
+Spread: 123.125
+----------------------------------------
+Ticker: CSCO
+Mean: 60.8005
+Variance: 8.29235
+Standard Deviation: 2.87964
+IQR: 4.42348
+Spread: 12.87
+----------------------------------------
+Ticker: QCOM
+Mean: 153.746
+Variance: 124.457
+Standard Deviation: 11.156
+IQR: 12.7415
+Spread: 49.9567
+----------------------------------------
+Ticker: AVGO
+Mean: 210.442
+Variance: 758.608
+Standard Deviation: 27.5428
+IQR: 41.58
+Spread: 114.79
+----------------------------------------
+Ticker: AMD
+Mean: 107.951
+Variance: 119.698
+Standard Deviation: 10.9407
+IQR: 16.18
+Spread: 51.34
+----------------------------------------
+Ticker: INTC
+Mean: 21.2455
+Variance: 3.43996
+Standard Deviation: 1.85471
+IQR: 2.3
+Spread: 9.26
+----------------------------------------
+Ticker: IBM
+Mean: 246.673
+Variance: 275.167
+Standard Deviation: 16.5882
+IQR: 21.6971
+Spread: 67.2964
+----------------------------------------
+Ticker: SHOP
+Mean: 103.894
+Variance: 130.822
+Standard Deviation: 11.4377
+IQR: 13.58
+Spread: 52.42
+----------------------------------------
+Ticker: SNOW
+Mean: 171.96
+Variance: 429.387
+Standard Deviation: 20.7217
+IQR: 26.84
+Spread: 80.75
+----------------------------------------
+Ticker: UBER
+Mean: 76.3619
+Variance: 60.0779
+Standard Deviation: 7.75099
+IQR: 12.82
+Spread: 29.29
+----------------------------------------
+Ticker: LYFT
+Mean: 13.3785
+Variance: 2.9618
+Standard Deviation: 1.72099
+IQR: 2.25
+Spread: 7.24
+----------------------------------------
+Ticker: PANW
+Mean: 183.986
+Variance: 118.258
+Standard Deviation: 10.8747
+IQR: 13.92
+Spread: 55.84
+----------------------------------------
+Ticker: NOW
+Mean: 949.622
+Variance: 11332.5
+Standard Deviation: 106.454
+IQR: 177.69
+Spread: 448.74
+----------------------------------------
+Ticker: ZM
+Mean: 78.5649
+Variance: 23.2836
+Standard Deviation: 4.8253
+IQR: 7.03
+Spread: 21.94
+----------------------------------------
+Ticker: PYPL
+Mean: 73.1887
+Variance: 75.7706
+Standard Deviation: 8.70463
+IQR: 9.57999
+Spread: 34.4
+----------------------------------------
+Ticker: XYZ
+Mean: 66.3921
+Variance: 188.534
+Standard Deviation: 13.7308
+IQR: 27
+Spread: 46.42
+----------------------------------------
+Ticker: TWLO
+Mean: 111.73
+Variance: 288.289
+Standard Deviation: 16.9791
+IQR: 17.89
+Spread: 67.01
+----------------------------------------
+Ticker: DDOG
+Mean: 117.385
+Variance: 310.989
+Standard Deviation: 17.6349
+IQR: 32.96
+Spread: 64.89
+----------------------------------------
+Ticker: NET
+Mean: 135.148
+Variance: 555.564
+Standard Deviation: 23.5704
+IQR: 40.82
+Spread: 82.63
+----------------------------------------

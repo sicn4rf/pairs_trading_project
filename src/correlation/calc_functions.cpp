@@ -373,5 +373,40 @@ void exportResidualCSV(const string& filename, const StockData& stock_objectX, c
 }
 
 
+// === TASK 14: Implement readSector() ===
+// This function gets passed a file path. its job is to open a file stream, read the sector selection 
+// into a variable. close the file stream, then return the string.
+
+string readSector(const string& file_name)
+{
+    ifstream sector_file(file_name);
+
+    // check if file opened successfully
+    if(!sector_file.is_open())
+    {
+        cout << "Failed to open sector file\n";
+        exit(EXIT_FAILURE);
+    }
+
+    string sector;
+
+    // check if failed to read a word
+    if(!getline(sector_file, sector))
+    {
+        cout << "Sector file was empty.\n";
+        sector_file.close();
+        exit(EXIT_FAILURE);
+    }
+
+    // close file stream
+    sector_file.close();
+
+    return sector;
+}
+
+
+
+
+
 
 

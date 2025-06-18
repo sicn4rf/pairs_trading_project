@@ -84,6 +84,8 @@ def process_csv(file_path, file_name, isSuccess):
 
         data_frame['P-value'] = p_val
 
+        data_frame.to_csv(file_path)
+
         # ======================
         # OUTPUT RESULTS
         # ======================
@@ -93,7 +95,7 @@ def process_csv(file_path, file_name, isSuccess):
             if p_val < 0.05:
                 print(f"{stock1} and {stock2} are LIKELY cointegrated. p-value is {p_val:.4f}\n")
             else:
-                print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}\n")
+                # print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}\n")
 
                 # shutil library allows us to move files (less error prone than os library)
                 shutil.move(file_path, f"../../data/processed/failures/{file_name}")

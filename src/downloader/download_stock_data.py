@@ -1,12 +1,35 @@
 import yfinance as yf
 import pandas as pd
-import os, shutil
+import os, shutil, sys
 from datetime import datetime, timedelta
-from ticker_macros import SECTORS
+
+# Add root directory to current path.
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 
-# This creates a literal list of 10 big tech company tickers that we want to analyze
-tickers = SECTORS['TECH']
+from config.ticker_macros import SECTORS
+
+
+# Display available sectors
+print("Available sectors:")
+for key in SECTORS:
+    print(f" - {key}")
+
+
+# Ask user which sector to run. use strip to remove any leading or trailing space
+# use upper to make it not case sensitive
+choice = input("Enter the sector you want to run: ").strip().upper()
+
+# Validate and get tickers
+if choice not in SECTORS:
+    print("Invalid sector name. Exiting.")
+    exit(1)
+
+tickers = SECTORS[choice]
+
+with open("../../data/results/sector_choice.txt", "w") as outFile:
+    outFile.write(choice + "\n")
+
 
 # Creating two datetime objects using the datetime library. End date being current date
 # and start date being 365 days ago. we do this using .today() and timedelta() functions

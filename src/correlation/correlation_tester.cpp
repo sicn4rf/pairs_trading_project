@@ -7,10 +7,37 @@ int main(void)
     // For each of the 10 CSV files, read raw adjusted close prices, compute log prices,
     // and store them into StockData objects containing dates, raw_prices, log_prices.
     
+    // Read what sector user chose.
+    string sector_choice = readSector("../../data/results/sector_choice.txt");
+
     // Declare a vector of ticker names along with an empty vector of StockData objects where we shall store
     // an object storing the data from the .csv files of every ticker we have.
-    vector<string> tickers = {TECH};
+    vector<string> tickers;
     vector<StockData> stock_universe;
+
+
+    // PREPROCESSOR MACROS CANNOT BE ACCESSED AT RUNTIME... so we have to resort to this monstrosity for now
+    if (sector_choice == "TECH") 
+    {
+        tickers = {TECH};
+    }
+    else if (sector_choice == "NRG") 
+    {
+        tickers = {NRG};
+    }
+    else if (sector_choice == "INSUR") 
+    {
+        tickers = {INSUR};
+    }
+    else if (sector_choice == "FASTF") 
+    {
+        tickers = {FASTF};
+    }
+    else 
+    {
+        cerr << "Unknown sector: " << sector_choice << endl;
+        exit(EXIT_FAILURE);
+    }
 
 
     // Loop through every ticker in our tickers vector.
@@ -53,7 +80,7 @@ int main(void)
     // - Output these statistics into a .txt file.
 
     // Edit directory (Delete pairs folder)
-    string filepath1 = "../results";
+    string filepath1 = "../../data/results";
 
     // Delete pairs if it exists
     if (std::__fs::filesystem::exists(filepath1))
@@ -65,7 +92,7 @@ int main(void)
     std::__fs::filesystem::create_directory(filepath1);
 
     // Open a results file to write the statistics
-    ofstream results_file("../results/results.txt");
+    ofstream results_file("../../data/results/results.txt");
     if(!results_file.is_open())
     {
         cerr << "Error opening results file." << endl;
@@ -167,6 +194,6 @@ int main(void)
 
     // === TASK 7: Complete program and wrap up ===
     // Ensure all files are properly closed, and print any summary or status messages.
-    printf("Program has finished running.");
+    printf("Program has finished running.\n");
     return 0;
 }
