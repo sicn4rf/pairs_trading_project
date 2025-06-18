@@ -15,7 +15,7 @@
 
 #define     INSUR \
     "AIG", "ALL", "ACGL", "AXS", "BRK-B", "CINF", "CB", "CNA", "HIG", "LNC", \
-    "MET", "PGR", "PRU", "RGA", "RE", "TRV", "WRB", "WTW", "MMC", "AJG", \
+    "MET", "PGR", "PRU", "RGA", "TRV", "WRB", "WTW", "MMC", "AJG", \
     "PFG", "UNM", "VOYA", "AFL", "GL", "FG", "FNF", "KMPR", "ORI", "BRO"
 
 #define     FASTF \

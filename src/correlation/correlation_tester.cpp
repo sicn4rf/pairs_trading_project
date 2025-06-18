@@ -25,6 +25,10 @@ int main(void)
     {
         tickers = {NRG};
     }
+    else if (sector_choice == "PHARMA") 
+    {
+        tickers = {PHARMA};
+    }
     else if (sector_choice == "INSUR") 
     {
         tickers = {INSUR};
