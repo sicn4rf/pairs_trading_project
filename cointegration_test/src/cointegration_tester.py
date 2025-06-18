@@ -82,6 +82,8 @@ def process_csv(file_path, file_name, isSuccess):
         # Task 6c: Add p-value column to .csv file
         # NOT DONE ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– (!!!)
 
+        data_frame['P-value'] = p_val
+
         # ======================
         # OUTPUT RESULTS
         # ======================
