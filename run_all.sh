@@ -14,4 +14,8 @@ cd cointegration
 python cointegration_tester.py
 cd ../../
 
+#echo "Running Jupyter Notebooke Visualizer..."
+#jupyter nbconvert --to notebook --execute src/visualization/raw_ot.ipynb --inplace
+
+
 python tester.py
