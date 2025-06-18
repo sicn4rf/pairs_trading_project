@@ -1,5 +1,6 @@
 /data/raw/*.csv
-/data/processed/*.csv
+/data/processed/successes/*.csv
+/data/processed/failures/*.csv
 /correlation_test/results/*
 /correlation_test/pairs/*
 /correlation_test/src/a.out
