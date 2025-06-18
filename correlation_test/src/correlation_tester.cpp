@@ -9,7 +9,7 @@ int main(void)
     
     // Declare a vector of ticker names along with an empty vector of StockData objects where we shall store
     // an object storing the data from the .csv files of every ticker we have.
-    vector<string> tickers = {NRG};
+    vector<string> tickers = {TECH};
     vector<StockData> stock_universe;
 
 
@@ -127,8 +127,13 @@ int main(void)
     // Pearson Correlation
     for(int i = 0; i < stock_universe.size() - 1; i++)
     {
-        for(int j = i + 1; j < stock_universe.size(); j++)
+        for(int j = 0; j < stock_universe.size(); j++)
         {
+            if(i == j)
+            {
+                // avoid self-pair
+                continue;
+            }
             double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
 
             // Create two folders
