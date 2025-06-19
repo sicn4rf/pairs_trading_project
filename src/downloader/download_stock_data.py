@@ -34,7 +34,7 @@ with open("../../data/results/sector_choice.txt", "w") as outFile:
 # Creating two datetime objects using the datetime library. End date being current date
 # and start date being 365 days ago. we do this using .today() and timedelta() functions
 end_date = datetime.today()
-start_date = "2025-01-01"
+start_date = end_date - timedelta(365)
 
 folder = '../../data/raw'
 
@@ -55,10 +55,12 @@ for tick in tickers:
     # Store the stocks historical data into a pandas data frame.
     # We do this by using the current ticker object to call .history() which returns the OHLCV data
     # of that particular stock from a start to end date, which we store in a data frame using pandas.
-    data_frame = current_tick.history(start=start_date, end=end_date.strftime('%Y-%m-%d'),interval='1d',auto_adjust=True)
+    data_frame = current_tick.history(start=start_date.strftime('%Y-%m-%d'), end=end_date.strftime('%Y-%m-%d'),interval='1d',auto_adjust=True)
 
     # Make it so that our data frame for date only includes the date and not the time
     data_frame.index = data_frame.index.date
+
+    data_frame.drop(columns=["Volume", "Dividends", "Stock Splits"], inplace=True)
     
     # Use pandas to store the historical data from the data frame into a .csv file, index_label="Date" means that the index of the data frame will be used as the first column in the csv file
     data_frame.to_csv(f"../../data/raw/{tick}.csv", index_label="Date")
