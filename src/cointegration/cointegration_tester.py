@@ -101,6 +101,11 @@ def process_csv(file_path, file_name, isSuccess):
                 shutil.move(file_path, f"../../data/processed/failures/{file_name}")
 
 
+        if not isSuccess:
+            if p_val < 0.05:
+                shutil.move(file_path, f"../../data/processed/misfits/{file_name}")
+
+
 # Runs process_csv() function and processes .csv's in both directories
 for file_name in os.listdir(failure_dir):
     process_csv(failure_dir, file_name, isSuccess=False)
