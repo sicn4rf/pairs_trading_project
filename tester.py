@@ -15,8 +15,8 @@ RESET = "\033[0m"
 # ================================================
 # USER PARAMETERS
 # ================================================
-def calc_pairs(stock1, stock2):
-    df = pd.read_csv(f"./data/processed/successes/{stock1}_{stock2}.csv")
+def calc_pairs(stock1, stock2, path):
+    df = pd.read_csv(f"{path}{stock1}_{stock2}.csv")
 
 
     residuals = df["Residual"].dropna().values
@@ -104,7 +104,7 @@ def calc_pairs(stock1, stock2):
     # plt.grid()
     # plt.show()
 
-data_directory = "./data/processed/successes"
+data_directory = "./data/processed/successes/"
 print("Backtester loading...\n")
 
 for pair in os.listdir(data_directory):
@@ -113,4 +113,15 @@ for pair in os.listdir(data_directory):
 
     print(f"{BOLD}{CYAN}{stockX_name} and {stockY_name}:{RESET}")
 
-    calc_pairs(stockX_name, stockY_name)
+    calc_pairs(stockX_name, stockY_name, data_directory)
+
+print("\nTESTING MISFITS\n")
+data_directory = "./data/processed/misfits/"
+
+for pair in os.listdir(data_directory):
+    stock_name = pair.replace(".csv", "")
+    stockX_name, stockY_name = stock_name.split("_")
+
+    print(f"{BOLD}{CYAN}{stockX_name} and {stockY_name}:{RESET}")
+
+    calc_pairs(stockX_name, stockY_name, data_directory)
