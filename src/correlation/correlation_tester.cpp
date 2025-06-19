@@ -167,9 +167,10 @@ int main(void)
             }
             double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
 
-            // Create two folders
+            // Create three folders
             std::__fs::filesystem::create_directory(filepath2 + "/successes/");
             std::__fs::filesystem::create_directory(filepath2 + "/failures/");
+            std::__fs::filesystem::create_directory(filepath2 + "/misfits/");
 
             if(corr_coeff >= 0.7)
             {
