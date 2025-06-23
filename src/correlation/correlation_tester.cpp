@@ -154,6 +154,8 @@ int main(void)
     // Create new pairs
     std::__fs::filesystem::create_directory(filepath2);
 
+    int total_count = 0;
+    int corr_count = 0;
 
     // Pearson Correlation
     for(int i = 0; i < stock_universe.size() - 1; i++)
@@ -165,6 +167,9 @@ int main(void)
                 // avoid self-pair
                 continue;
             }
+            // counter to count total pairs
+            total_count++;
+
             double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
 
             // Create three folders
@@ -177,6 +182,8 @@ int main(void)
                 // TASK 6 linearRegression(log prices of both stocks; also store in proper folder based on correlation)
                 //vector<double> current_residuals;
                 //linearRegression(stock_universe[i].log_prices, stock_universe[j].log_prices, current_residuals);
+
+                corr_count++;
 
                 string filename = "../../data/processed/successes/" + stock_universe[i].ticker_name + "_" + stock_universe[j].ticker_name + ".csv";
                 exportResidualCSV(filename, stock_universe[i], stock_universe[j]);
@@ -199,6 +206,7 @@ int main(void)
 
     // === TASK 7: Complete program and wrap up ===
     // Ensure all files are properly closed, and print any summary or status messages.
-    printf("Program has finished running.\n");
+    cout << "Tested " << total_count << " permutations of pairs\n";
+    cout << corr_count << " pairs resulted in a correlation coefficient > 0.7\n\n";
     return 0;
 }
