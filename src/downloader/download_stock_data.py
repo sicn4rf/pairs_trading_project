@@ -46,11 +46,14 @@ else:
 
 print("Gathering data from yfinance...")
 
+count = 0
+
 # Iterate through every ticker in our tickers list
 for tick in tickers:
     # Create a ticker object for our current company
     # .Ticker() takes in a string as an argument and returns a ticker object for that particular company
     current_tick = yf.Ticker(tick)
+    count += 1
 
     # Store the stocks historical data into a pandas data frame.
     # We do this by using the current ticker object to call .history() which returns the OHLCV data
@@ -65,6 +68,6 @@ for tick in tickers:
     # Use pandas to store the historical data from the data frame into a .csv file, index_label="Date" means that the index of the data frame will be used as the first column in the csv file
     data_frame.to_csv(f"../../data/raw/{tick}.csv", index_label="Date")
 
-print("Done collecting data.")
-
+print(f"Collected {count} tickers...")
+print("Done collecting data.\n")
 
