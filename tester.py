@@ -1,127 +1,81 @@
-import pandas as pd
-import numpy as np
-import os
-import matplotlib.pyplot as plt
-import statsmodels.api as sm
-from statsmodels.tsa.stattools import coint, adfuller
+# test.py  ──────────────────────────────────────────────────────────────
+import os, pandas as pd, numpy as np
 
-RED = "\033[91m"
-GREEN = "\033[92m"
-YELLOW = "\033[93m"
-CYAN = "\033[96m"
-BOLD = "\033[1m"
-RESET = "\033[0m"
+SUCCESS_DIR   = "./data/processed/successes"
+CAPITAL       = 1_000_000          # notional stake per pair
+ROLL          = 60                 # window for rolling z-score
+THRESHOLD_IN  = 1.8                # tighter → fewer, stronger signals
+THRESHOLD_OUT = 0.5
+TRADING_DAYS  = 252
+TC_PCT_SIDE   = 0.0005             # 0.05 % per side ≈ 1 bp each leg
+MAX_HOLD      = 30                 # days; auto-close to stop “evergreen” trades
 
-# ================================================
-# USER PARAMETERS
-# ================================================
-def calc_pairs(stock1, stock2, path):
-    df = pd.read_csv(f"{path}{stock1}_{stock2}.csv")
+def backtest_pair(csv_path):
+    df        = pd.read_csv(csv_path)
+    residuals = df["Residual"]
 
+    mu  = residuals.rolling(ROLL).mean()
+    sig = residuals.rolling(ROLL).std()
+    z   = (residuals - mu) / sig
 
-    residuals = df["Residual"].dropna().values
+    position, entry_px, entry_day = 0, np.nan, None
+    daily_pnl  = np.zeros(len(residuals))
 
-    # ADF Test
-    pvalue = adfuller(residuals)[1]
+    for i in range(len(residuals)):
 
-    # Extract stock names from filename
-    window = 60  # Rolling window size for z-score
-    entry_threshold = 1.0  # Entry threshold for z-score
-    exit_threshold = 0.0  # Exit threshold to close positions
+        # ── ENTRY ──────────────────────────────────────────────────────
+        if position == 0:
+            if   z[i] >  THRESHOLD_IN:
+                position, entry_px, entry_day = -1, residuals[i], i
+                daily_pnl[i] -= CAPITAL * TC_PCT_SIDE     # commission/slip
+            elif z[i] < -THRESHOLD_IN:
+                position, entry_px, entry_day =  1, residuals[i], i
+                daily_pnl[i] -= CAPITAL * TC_PCT_SIDE
 
+        # ── EXIT / MARK-TO-MARKET ─────────────────────────────────────
+        elif position != 0:
+            # Hard stop: max holding period
+            if i - entry_day >= MAX_HOLD or abs(z[i]) < THRESHOLD_OUT:
+                daily_pnl[i] += position * (residuals[i] - entry_px) * CAPITAL
+                daily_pnl[i] -= CAPITAL * TC_PCT_SIDE      # exit cost
+                position = 0
 
-    # print(f"Cointegration p-value: {pvalue:.4f}")
-    if pvalue > 0.05:
-        print("WARNING: Pair may not be cointegrated.")
+            else:
+                # intra-trade mark to market
+                daily_pnl[i] += position * (residuals[i] - residuals[i-1]) * CAPITAL
 
-    # ================================================
-    # HEDGE RATIO ESTIMATION (OLS)
-    # ================================================
-    beta = df['Beta'].iloc[0]
-    # Calculate spread
-    df['spread'] = df[f'{stock2} Log Price'] - (beta * df[f'{stock1} Log Price'])
+    # ── PERFORMANCE METRICS ───────────────────────────────────────────
+    total_pnl   = daily_pnl.sum()
+    total_ret   = total_pnl / CAPITAL
 
-    # ================================================
-    # CALCULATE ROLLING Z-SCORE
-    # ================================================
-    df['spread_mean'] = df['spread'].rolling(window).mean()
-    df['spread_std'] = df['spread'].rolling(window).std()
-    df['zscore'] = (df['spread'] - df['spread_mean']) / df['spread_std']
+    # annualise over the *whole* data span, not just trading days
+    ann_return  = (1 + total_ret) ** (TRADING_DAYS / len(residuals)) - 1
 
-    # ================================================
-    # TRADE SIGNAL GENERATION WITH POSITION HOLDING LOGIC
-    # ================================================
-    df['position'] = 0
+    daily_ret   = daily_pnl / CAPITAL
+    sharpe      = np.nan
+    sd = daily_ret.std(ddof=1)
+    if sd > 0:
+        sharpe = np.sqrt(TRADING_DAYS) * daily_ret.mean() / sd
 
-    # Initialize position
-    for i in range(window, len(df)):
-        if df.loc[i, 'zscore'] > entry_threshold:
-            df.loc[i, 'position'] = -1  # short spread
-        elif df.loc[i, 'zscore'] < -entry_threshold:
-            df.loc[i, 'position'] = 1  # long spread
-        else:
-            # Carry forward previous position (hold until exit threshold crossed)
-            df.loc[i, 'position'] = df.loc[i-1, 'position']
-            # Flat when zscore crosses exit threshold
-            if abs(df.loc[i, 'zscore']) < exit_threshold:
-                df.loc[i, 'position'] = 0
+    return {
+        "Pair":   os.path.basename(csv_path).replace(".csv",""),
+        "Trades": (daily_pnl != 0).sum() // 2,   # entry+exit = 1 trade
+        "TotalPnL":   round(total_pnl, 2),
+        "Return_%":   round(total_ret * 100, 2),
+        "Annualised_%": round(ann_return * 100, 2),
+        "Sharpe": round(sharpe, 2) if not np.isnan(sharpe) else "NA"
+    }
 
-    # ================================================
-    # RETURNS CALCULATION
-    # ================================================
-    df['ret_stock1'] = df[f'{stock1} Raw Price'].pct_change()
-    df['ret_stock2'] = df[f'{stock2} Raw Price'].pct_change()
+def main():
+    rows = []
+    for f in os.listdir(SUCCESS_DIR):
+        if f.endswith(".csv"):
+            rows.append(backtest_pair(os.path.join(SUCCESS_DIR, f)))
 
-    # Apply hedge ratio to second stock return
-    df['spread_return'] = df['position'] * (df['ret_stock2'] - beta * df['ret_stock1'])
-    df['spread_return'] = df['spread_return'].fillna(0)
+    res = pd.DataFrame(rows).sort_values("TotalPnL", ascending=False)
+    print(res.to_string(index=False))
+    res.to_csv("backtest_results.csv", index=False)
+    print("\nSaved to backtest_results.csv")
 
-    # Cumulative returns
-    df['cum_return'] = (1 + df['spread_return']).cumprod()
-
-    # ================================================
-    # PERFORMANCE METRICS
-    # ================================================
-    days = df.shape[0]
-    total_return = df['cum_return'].iloc[-1] - 1
-    annual_return = (1 + total_return) ** (252 / days) - 1
-
-    print(f"Annualized return: ")
-    if annual_return > 0:
-        print(f"{GREEN}{annual_return * 100:.2f}%\n{RESET}")
-    else:
-        print(f"{RED}{annual_return * 100:.2f}%\n{RESET}")
-
-    # ================================================
-    # PLOT RESULTS
-    # ================================================
-    # plt.figure(figsize=(12, 6))
-    # plt.plot(df['Date'], df['cum_return'], label='Strategy')
-    # plt.title(f"Pairs Trading Backtest: {stock1} vs {stock2}")
-    # plt.xlabel("Date")
-    # plt.ylabel("Cumulative Return")
-    # plt.legend()
-    # plt.grid()
-    # plt.show()
-
-data_directory = "./data/processed/successes/"
-print("Backtester loading...\n")
-
-for pair in os.listdir(data_directory):
-    stock_name = pair.replace(".csv", "")
-    stockX_name, stockY_name = stock_name.split("_")
-
-    print(f"{BOLD}{CYAN}{stockX_name} and {stockY_name}:{RESET}")
-
-    calc_pairs(stockX_name, stockY_name, data_directory)
-
-print("\nTESTING MISFITS\n")
-data_directory = "./data/processed/misfits/"
-
-for pair in os.listdir(data_directory):
-    stock_name = pair.replace(".csv", "")
-    stockX_name, stockY_name = stock_name.split("_")
-
-    print(f"{BOLD}{CYAN}{stockX_name} and {stockY_name}:{RESET}")
-
-    calc_pairs(stockX_name, stockY_name, data_directory)
+if __name__ == "__main__":
+    main()
