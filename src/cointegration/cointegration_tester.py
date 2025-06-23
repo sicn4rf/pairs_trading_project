@@ -32,7 +32,7 @@ success_dir = os.path.join(data_directory, "successes")
 failure_dir = os.path.join(data_directory, "failures")
 
 # This function allows us to process both the successes and failures directories by defining the process as a function.
-def process_csv(file_path, file_name, isSuccess):
+def process_csv(file_path, file_name, isSuccess) -> bool:
     # Task 3a: Check if file ends with '.csv' (only process residual files)
     if file_name.endswith(".csv"):
         # Task 3b: Build full file path using os.path.join
@@ -94,20 +94,40 @@ def process_csv(file_path, file_name, isSuccess):
         if isSuccess:
             if p_val < 0.05:
                 print(f"{stock1} and {stock2} are LIKELY cointegrated. p-value is {p_val:.4f}\n")
+                
+                return True
             else:
                 # print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}\n")
 
                 # shutil library allows us to move files (less error prone than os library)
                 shutil.move(file_path, f"../../data/processed/failures/{file_name}")
+                return False
 
 
         if not isSuccess:
             if p_val < 0.05:
                 shutil.move(file_path, f"../../data/processed/misfits/{file_name}")
+                return False
 
+        return False
+
+
+# declare counter variables
+count = 0
+counter = 0
 
 # Runs process_csv() function and processes .csv's in both directories
 for file_name in os.listdir(failure_dir):
-    process_csv(failure_dir, file_name, isSuccess=False)
+    # increment count for every pair tested
+    count += 1
+
+    # if returns true, increment successful pairs
+    if process_csv(failure_dir, file_name, isSuccess=False):
+        counter += 1
+        
 for file_name in os.listdir(success_dir):
+
     process_csv(success_dir, file_name, isSuccess=True)
+
+print(f"Tested {count} pairs...")
+print(f"{counter} pairs showed to be likely cointegrated")
