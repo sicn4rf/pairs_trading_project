@@ -17,6 +17,6 @@ cd ../../
 #echo "Running Jupyter Notebooke Visualizer..."
 #jupyter nbconvert --to notebook --execute src/visualization/raw_ot.ipynb --inplace
 
-cd src/backtester/backtester.py
-
+cd src/backtester/
+python backtester.py
 cd ../../
