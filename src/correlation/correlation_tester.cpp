@@ -158,7 +158,7 @@ int main(void)
     int corr_count = 0;
 
     // Pearson Correlation
-    for(int i = 0; i < stock_universe.size() - 1; i++)
+    for(int i = 0; i < stock_universe.size(); i++)
     {
         for(int j = 0; j < stock_universe.size(); j++)
         {
