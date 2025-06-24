@@ -273,7 +273,7 @@ double pearsonCorrelation(const vector<double>& log_returnX, const vector<double
 // - alpha
 // - residuals for each point
 // Follows OLS regression formulas.
-void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, double& refBeta, vector<double>& refResiduals) 
+void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, double& refBeta, double& refAlpha, vector<double>& refResiduals) 
 {
     // Declare mean values for stocks X and Y
     double mean_stockX = mean(stock_valuesX);
@@ -294,13 +294,13 @@ void linearRegression(const vector<double>& stock_valuesX, const vector<double>&
     }
 
     refBeta = numerator / denominator;
-    double alpha = mean_stockY - (refBeta * mean_stockX);
+    refAlpha = mean_stockY - (refBeta * mean_stockX);
 
     // Loop through every value in the pair of stocks and use alpha and beta to calculate residuals
     // Store these residuals in a vector
     for(int i = 0; i < stock_valuesX.size(); i++)
     {
-        residual = stock_valuesY[i] - (alpha + (refBeta * stock_valuesX[i]));
+        residual = stock_valuesY[i] - (refAlpha + (refBeta * stock_valuesX[i]));
 
         refResiduals.push_back(residual);
     }
@@ -334,7 +334,8 @@ void exportResidualCSV(const string& filename, const StockData& stock_objectX, c
     // Compute residuals
     vector<double> residuals;
     double beta;
-    linearRegression(stock_objectX.log_prices, stock_objectY.log_prices, beta, residuals);
+    double alpha;
+    linearRegression(stock_objectX.log_prices, stock_objectY.log_prices, beta, alpha, residuals);
 
     // Output stream create
     ofstream outfile(filename);
@@ -354,7 +355,8 @@ void exportResidualCSV(const string& filename, const StockData& stock_objectX, c
         << ticker2 << " Log Price," // 5
         << "Residual," // 6
         << "Spread," // 7
-        << "Beta" << endl; // 8
+        << "Beta," 
+        << "Alpha" << endl; // 8
 
     for (int i = 0; i < stock_objectX.dates.size(); i++)
     {
@@ -366,7 +368,8 @@ void exportResidualCSV(const string& filename, const StockData& stock_objectX, c
             << stock_objectY.log_prices[i] << ',' 
             << residuals[i] << ','
             << calcSpread(stock_objectX.raw_prices[i], stock_objectY.raw_prices[i]) << ','
-            << beta << endl;
+            << beta << ','
+            << alpha << endl;
     }
 
     outfile.close();
