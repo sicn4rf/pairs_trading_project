@@ -8,26 +8,27 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"
 
 
 from config.ticker_macros import SECTORS
+from utils.cli_ui import header, keyval, GREEN, YEL, BOLD, RESET
 
 
 # Display available sectors
-print("Available sectors:")
-for key in SECTORS:
-    print(f" - {key}")
+header("DATA SCRAPER")
+keyval("Available sectors:", ", ".join(SECTORS))
 
 
 # Ask user which sector to run. use strip to remove any leading or trailing space
 # use upper to make it not case sensitive
-choice = input("Enter the sector you want to run: ").strip().upper()
+
+choice = input(f"  {BOLD}Enter the sector you want to run: {RESET}").strip().upper()
 
 # Validate and get tickers
 if choice not in SECTORS:
-    print("Invalid sector name. Exiting.")
+    print("  Invalid sector name. Exiting.")
     exit(1)
 
 tickers = SECTORS[choice]
 
-with open("../../data/results/sector_choice.txt", "w") as outFile:
+with open("./data/results/sector_choice.txt", "w") as outFile:
     outFile.write(choice + "\n")
 
 
@@ -44,7 +45,7 @@ if os.path.exists(folder):
 else:
     os.makedirs(folder)
 
-print("Gathering data from yfinance...")
+print(f"\n  {YEL}Gathering data from yfinance...{RESET}\n")
 
 count = 0
 
@@ -68,6 +69,7 @@ for tick in tickers:
     # Use pandas to store the historical data from the data frame into a .csv file, index_label="Date" means that the index of the data frame will be used as the first column in the csv file
     data_frame.to_csv(f"../../data/raw/{tick}.csv", index_label="Date")
 
-print(f"Collected {count} tickers...")
-print("Done collecting data.\n")
+keyval("Collected tickers:", len(tickers))
+keyval("Status:", "Done", GREEN)
+print('\n')
 
