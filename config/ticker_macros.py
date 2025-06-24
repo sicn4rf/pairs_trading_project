@@ -2,38 +2,56 @@
 
 
 SECTORS = {
-    'TECH':
+    'TECH': 
     [
-    'AAPL', 'MSFT', 'GOOG', 'META', 'AMZN', 'NVDA', 'TSLA', 'NFLX', 'ORCL',
-    'ADBE', 'CRM', 'CSCO', 'QCOM', 'AVGO', 'AMD', 'INTC', 'IBM', 'SHOP', 'SNOW',
-    'UBER', 'LYFT', 'PANW', 'NOW', 'ZM', 'PYPL', 'XYZ', 'TWLO', 'DDOG', 'NET'
+        'MSFT','NVDA','AAPL','AMZN','GOOG','META','AVGO','TSM','TSLA','ORCL',
+        'NFLX','SAP','PLTR','ASML','IBM','CSCO','CRM','AMD','INTU','NOW',
+        'UBER','TXN','BKNG','QCOM','ARM','ADBE','SPOT','SHOP','AMAT','MU',
+        'PANW','MELI','ADP','LRCX','CRWD','ANET','APP','KLAC','ADI','MSTR',
+        'SNOW','DDOG','NET','ZS','WDAY'
     ],
 
-    'PHARMA':
+    # ---------------------------  PHARMA  -------------------------- #
+    'PHARMA': 
     [
-    'JNJ', 'PFE', 'MRK', 'LLY', 'ABBV', 'BMY', 'AZN', 'GILD', 'AMGN', 'BIIB',
-    'VRTX', 'REGN', 'ZTS', 'CVS', 'CI', 'UNH', 'HUM', 'ISRG', 'RMD', 'DXCM',
-    'SNY', 'MDT', 'SYK', 'BDX', 'ABT', 'IDXX', 'MRNA', 'ALNY', 'UTHR'
+        'LLY','UNH','JNJ','ABBV','MRK','TMO','NVS','ABT','DHR','AZN',
+        'PFE','SYK','MDT','AMGN','GILD','BMY','ISRG','CI','REGN','VRTX',
+        'CVS','ELV','HCA','BDX','BSX','ZBH','IQV','MCK','EW','CAH',
+        'ILMN','RMD','IDXX','ALNY','BAX','GEHC','BIIB','COO','LH','DGX',
+        'SNY','ZTS','UTHR','INCY','DXCM'
     ],
 
-    'NRG':
+    # ---------------------------   NRG   --------------------------- #
+    'NRG': 
     [
-    'XOM', 'CVX', 'COP', 'BP', 'SHEL', 'OXY', 'EOG', 'MPC', 'VLO',
-    'PSX', 'DVN', 'MUR', 'APA', 'FANG', 'HES', 'MTDR', 'AR',
-    'RRC', 'SM', 'KMI', 'ENB', 'WMB', 'OKE', 'ET'
+        'XOM','CVX','SHEL','TTE','BP','COP','EOG','ENB','SLB','OXY',
+        'EQNR','CNQ','PSX','VLO','HES','KMI','DVN','SU','TRP',
+        'MPC','FANG','APA','CVE','PBR','BKR','WMB','OKE','NEE',
+        'ET','HAL','LNG','NOV','PAA','RRC','OII','CNX','CTRA',
+        'AR','SM','MUR','DINO','PAGP','HP','RIG', 'LEU'
     ],
 
-    'INSUR':
+    # ---------------------------  INSUR  --------------------------- #
+    'INSUR': 
     [
-    'AIG', 'ALL', 'ACGL', 'AXS', 'BRK-B', 'CINF', 'CB', 'CNA', 'HIG', 'LNC',
-    'MET', 'PGR', 'PRU', 'RGA', 'TRV', 'WRB', 'WTW', 'MMC', 'AJG',
-    'PFG', 'UNM', 'VOYA', 'AFL', 'GL', 'FG', 'FNF', 'KMPR', 'ORI', 'BRO'
+        'BRK-B','BRK-A','CB','AON','MMC','TRV','AIG','MET','PRU','AFL',
+        'PGR','CINF','HIG','WRB','RNR','LNC','GL','RGA','PFG','UNM',
+        'AIZ','MKL','ORI','SIGI','ACGL','AJG','BRO','EG','RLI','KNSL',
+        'CNA','CNO','FG','MFC','SLF','PUK','L','VOYA','CRBG','BHF',
+        'PRI','SAFT','ERIE','HMN','THG'
     ],
 
-    'FASTF':
+
+    'FASTF': 
     [
-    'MCD', 'YUM', 'SBUX', 'DPZ', 'CMG', 'QSR', 'SHAK', 'WEN', 'CAKE', 'DNUT', 
-    'EAT', 'BJRI', 'TXRH', 'WING', 'DRI', 'PZZA', 'BLMN', 'PTLO', 'NDLS',
-    'DENN', 'BROS', 'KRUS', 'ARCO', 'NATH', 'CAVA', 'FWRG',
+        'MCD',  'SBUX', 'CMG',  'YUM',  'QSR',
+        'DRI',  'YUMC', 'DPZ',  'BROS', 'TXRH',
+        'WING', 'CAVA', 'EAT',  'SHAK', 'CAKE',
+        'WEN',  'ARCO', 'PZZA', 'SG',   'CBRL',
+        'KRUS', 'BJRI', 'FWRG', 'BH',   'PTLO',
+        'BLMN', 'NATH', 'DIN',  'PBPB', 'RICK',
+        'JACK', 'LOCO', 'DENN', 'STKS', 'GENK',
+        'RRGB', 'NDLS', 'RAVE', 'ARKR', 'GTIM',
+        'FAT',  'DNUT', 'PLAY', 'KR',   'DRVN',  
     ],
 }
