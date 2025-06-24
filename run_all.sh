@@ -9,7 +9,7 @@ g++ -std=c++11 correlation_tester.cpp calc_functions.cpp
 ./a.out
 cd ../
 
-echo "Compiling and running COINTEGRATION TEST...\n"
+echo "Compiling and running COINTEGRATION TEST..."
 cd cointegration
 python cointegration_tester.py
 cd ../../
@@ -17,5 +17,6 @@ cd ../../
 #echo "Running Jupyter Notebooke Visualizer..."
 #jupyter nbconvert --to notebook --execute src/visualization/raw_ot.ipynb --inplace
 
+cd src/backtester/backtester.py
 
-python tester.py
+cd ../../
