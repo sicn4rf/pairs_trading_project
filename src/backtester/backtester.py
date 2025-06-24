@@ -1,140 +1,165 @@
- -------------------------------------------------------------------
-# 1. Imports
-# -------------------------------------------------------------------
-# TASK 1: import Python std‑lib & third‑party packages.
-# Tip: keep standard library imports first, third‑party next, local last.
-# Example:
-# import os
-# import pandas as pd
-# import numpy as np
-# -------------------------------------------------------------------
+"""
+pairs_backtest.py
+Back-tests every <Y>_<X>.csv in data/processed/successes/
 
-# -------------------------------------------------------------------
-# 2. Constants / Strategy Parameters
-# -------------------------------------------------------------------
-# TASK 2: Declare configuration variables that control the strategy.
-# Edit freely as you experiment.
-SUCCESS_DIR   = "./data/processed/successes"  # where your residual CSVs live
-CAPITAL       = 1_000_000          # dollars committed per pair
-ROLL          = 60                 # rolling window length for z‑score
-THRESHOLD_IN  = 1.8                # z threshold to *enter* trade
-THRESHOLD_OUT = 0.5                # z threshold to *exit* trade
-TRADING_DAYS  = 252                # used for annualisation
-TC_PCT_SIDE   = 0.0005             # transaction cost per side (0.05 %)
-MAX_HOLD      = 30                 # max holding period in days
-# -------------------------------------------------------------------
+Each CSV must contain at least:
+    <Y> Raw Price, <X> Raw Price, Residual, Beta
+Residual must be  log(Y) − [Alpha + Beta · log(X)]
 
-# -------------------------------------------------------------------
-# 3. backtest_pair
-# -------------------------------------------------------------------
+Strategy:
+    • Rolling 21-day mean / std dev  →  z-score
+    • Entry  when z crosses ±1.3
+    • Exit   when z crosses back ±0.3
+    • Size   so a further 1.2 σ adverse move ≈ $2 000 (2 % of 100 k)
+    • HARD CAP: gross notional ≤ 150 % of equity
+"""
 
-def backtest_pair(csv_path):
-    """
-    TASK 3 – Implement the core single‑pair back‑test.
+import os
+import numpy as np
+import pandas as pd
+from pathlib import Path
 
-    Parameters
-    ----------
-    csv_path : str
-        Path to a CSV file produced by your cointegration routine.
-        The file **must** contain a column called 'Residual' representing
-        the spread (y - βx) between the two stocks.
 
-    Returns
-    -------
-    dict
-        Performance metrics for this pair (see TASK 3 instructions below).
-    """
+# ----------------------------- USER PARAMS -------------------------------- #
+SUCCESS_DIR  = "data/processed/successes/"   # folder of pair CSVs
+WINDOW       = 21          # rolling window for z-score
+ENTRY_TH     = 1.5
+EXIT_TH      = 0.5
+INIT_CAP     = 100_000      # starting cash
+MAX_RISK     = 0.01 * INIT_CAP   # $1,000, 1% of capital
+MAX_LEV      = 0.5     # 50 % of equity
+MAX_GROSS    = INIT_CAP * MAX_LEV # $50,000 max exposure
+# -------------------------------------------------------------------------- #
 
-    # --- 3.a Load data -------------------------------------------------
-    # Example:
-    # import pandas as pd
-    # df = pd.read_csv(csv_path)
-    # residuals = df["Residual"]
-    # ------------------------------------------------
+def size_by_risk(beta, px_ind, px_dep, resid_std):
 
-    # TODO: Replace the lines below with your actual implementation.
-    raise NotImplementedError("3.a – Read CSV and pull residual series")
+    #   Return (sharesY, sharesX) so that a 1.2 σ adverse move ≈ MAX_RISK.
 
-    # --- 3.b Calculate rolling z‑score -------------------------------
-    # μ_t = rolling_mean(residuals, window=ROLL)
-    # σ_t = rolling_std(residuals, window=ROLL)
-    # z_t = (residuals - μ_t) / σ_t
-    # HINT: Series.rolling().mean()
+    dollar_per_sigma = resid_std * px_dep
+    shares_dep = MAX_RISK / (1.2 * dollar_per_sigma)
+    shares_ind = shares_dep * beta * px_dep / px_ind
+    return shares_ind, shares_dep
 
-    # TODO: compute mu, sig, z
 
-    # --- 3.c Simulate trading loop ------------------------------------
-    # Outline:
-    #   position   = 0   # +1 long spread, -1 short spread
-    #   entry_px   = np.nan
-    #   entry_day  = None
-    #   daily_pnl  = np.zeros(len(residuals))
-    #
-    #   for i in range(len(residuals)):
-    #       if position == 0:
-    #           # Look to *enter* trade
-    #           if z[i] > THRESHOLD_IN:  -> open SHORT spread (position = -1)
-    #           elif z[i] < -THRESHOLD_IN: -> open LONG spread (position = +1)
-    #           # subtract transaction cost once at entry
-    #
-    #       else:
-    #           # Already in trade – decide whether to exit
-    #           exit_cond = (i - entry_day >= MAX_HOLD) or (abs(z[i]) < THRESHOLD_OUT)
-    #           if exit_cond:
-    #               # Realise PnL: position * (residuals[i] - entry_px) * CAPITAL
-    #               # subtract exit transaction cost
-    #               # reset position variables
-    #
-    #           else:
-    #               # Mark‑to‑market: PnL change since yesterday
-    #               # position * (residuals[i] - residuals[i-1]) * CAPITAL
-    #
-    #   Hint: Using `+=` into daily_pnl[i] captures cashflows each day.
-    #
-    # TODO: implement trading loop
+def backtest_pair(csv_path: str) -> dict:
+    # Run the strategy on one CSV; return summary statistics.
+    data = pd.read_csv(csv_path)
 
-    # --- 3.d Performance metrics --------------------------------------
-    # Examples (replace vars when you have them):
-    # total_pnl   = daily_pnl.sum()
-    # total_ret   = total_pnl / CAPITAL
-    # ann_return  = (1 + total_ret) ** (TRADING_DAYS / len(residuals)) - 1
-    #
-    # daily_ret   = daily_pnl / CAPITAL
-    # sd = daily_ret.std(ddof=1)
-    # sharpe = (np.sqrt(TRADING_DAYS) * daily_ret.mean() / sd) if sd > 0 else np.nan
-    #
-    # trades = (daily_pnl != 0).sum() // 2  # each trade = entry + exit
-    #
-    # return {
-    #     "Pair": os.path.basename(csv_path).replace(".csv",""),
-    #     "Trades": trades,
-    #     "TotalPnL": round(total_pnl, 2),
-    #     "Return_%": round(total_ret * 100, 2),
-    #     "Annualised_%": round(ann_return * 100, 2),
-    #     "Sharpe": round(sharpe, 2) if not np.isnan(sharpe) else "NA"
-    # }
-    # ------------------------------------------------------------------
-    # TODO: compute stats & build results dict
-# -------------------------------------------------------------------
+    # --- Detect tickers from filename and build column names -------------
+    current_name = Path(csv_path).stem
+    ind_tick, dep_tick = current_name.split("_")
+    
 
-# -------------------------------------------------------------------
-# 4. main
-# -------------------------------------------------------------------
+    raw_ind = data[f"{ind_tick} Raw Price"]
+    raw_dep = data[f"{dep_tick} Raw Price"]
+
+    # --- Build z-score ----------------------------------------------------
+    data["resid_mean"] = data["Residual"].rolling(WINDOW).mean()
+    data["resid_std"]  = data["Residual"].rolling(WINDOW).std()
+    data["z_score"]    = (data["Residual"] - data["resid_mean"]) / data["resid_std"]
+
+    beta = data["Beta"].iloc[0]
+
+    # --- State vars -------------------------------------------------------
+    capital   = INIT_CAP
+    position  = 0            # 0 flat | +1 long-spread | −1 short-spread
+    shares    = {"Independent": 0.0, "Dependent": 0.0}
+    entry_px  = {"Independent": np.nan, "Dependent": np.nan}
+    trades    = []
+    equity = []
+
+    # --- Back-test loop ---------------------------------------------------
+    for i in range(WINDOW, len(data)):
+        z = data.at[i, "z_score"]
+        prev_z = data.at[i - 1, "z_score"]
+        px_ind, px_dep   = raw_ind.at[i]   , raw_dep.at[i]
+        std_res       = data.at[i, "resid_std"]
+        equity.append(capital)
+
+        # -------------- ENTRY -----------------
+        if position == 0:
+            crossed_hi = prev_z <  ENTRY_TH and z >=  ENTRY_TH  # Y rich +z score
+            crossed_lo = prev_z > -ENTRY_TH and z <= -ENTRY_TH  # Y cheap -z score
+
+            if crossed_hi or crossed_lo:
+                shares_ind, shares_dep = size_by_risk(beta, px_ind, px_dep, std_res)
+
+
+                # ---- Leverage cap -----
+                gross = abs(shares_ind * px_ind) + abs(shares_dep * px_dep)
+                if gross > MAX_GROSS:
+                    scale = MAX_GROSS / gross
+                    shares_dep *= scale
+                    shares_ind *= scale
+                    gross = abs(shares_dep * px_dep) + abs(shares_ind * px_ind)
+
+                # integer shares (round down) – ensure at least 1 share
+                shares_dep = max(1, int(shares_dep))
+                shares_ind = max(1, int(shares_ind))
+
+                sign = -1 if crossed_hi else +1          # -1 short-spread
+                position     = sign
+                shares["Independent"]  = -sign * shares_ind              # opposite leg
+                shares["Dependent"]  =  sign * shares_dep              # long or short Y
+        
+                entry_px["Independent"] = px_ind
+                entry_px["Dependent"] = px_dep
+                
+                continue  # go to next day
+
+        # -------------- EXIT ------------------
+        exit_short = position == -1 and prev_z > EXIT_TH and z <=  EXIT_TH
+        exit_long  = position == +1 and prev_z < -EXIT_TH and z >= -EXIT_TH
+        if exit_short or exit_long:
+            pnl = shares["Dependent"] * (px_dep - entry_px["Dependent"]) + shares["Independent"] * (px_ind - entry_px["Independent"])
+            capital += pnl
+            trades.append({"Side": "short-long" if position == -1 else "long-short",
+                           "Profit & Loss": pnl})
+            position  = 0
+            shares    = {"Dependent":0.0, "Independent":0.0}
+
+
+
+    # -------------- Summary stats ----------------
+    total_pnl = round(capital - INIT_CAP, 2)
+    days      = len(data)
+    ann_ret   = round(((capital / INIT_CAP)**(252/days) - 1) * 100, 2) if days else 0
+
+    trade_pct = [t["Profit & Loss"]/INIT_CAP for t in trades]
+    sharpe    = 0
+    equity = pd.Series(equity, index=data.index[WINDOW:])
+    daily_ret = equity.pct_change().dropna()
+
+    if len(daily_ret) > 1 and daily_ret.std():
+        sharpe = round(daily_ret.mean() / daily_ret.std() * np.sqrt(252), 2)
+    else:
+        sharpe = 0
+
+    return {
+        "Pair": f"{dep_tick}_{ind_tick}",
+        "Trades": len(trades),
+        "TotalPnL": total_pnl,
+        "AnnRet%": ann_ret,
+        "Sharpe": sharpe
+    }
+
 
 def main():
-    """
-    TASK 4 – Portfolio orchestrator.
-    Walk over every CSV in SUCCESS_DIR, call backtest_pair, aggregate results.
-    Save output to 'backtest_results.csv' and pretty‑print to console.
-    """
-    # TODO: create results list, loop over files, build DataFrame, sort
-    pass
-# -------------------------------------------------------------------
+    rows = []
+    csv_files = [f for f in os.listdir(SUCCESS_DIR) if f.endswith(".csv")]
+    
+    if csv_files:
+        for file in csv_files:
+            rows.append(backtest_pair(os.path.join(SUCCESS_DIR, file)))
+    else:
+        print("Successes folder is empty.. No cointegrated pairs :(")
+        exit()
 
-# -------------------------------------------------------------------
-# 5. Entrypoint
-# -------------------------------------------------------------------
+    summary = pd.DataFrame(rows).sort_values("TotalPnL", ascending=False)
+    print(summary.to_string(index=False))
+    summary.to_csv("backtest_results.csv", index=False)
+    print("\nSaved to backtest_results.csv")
+
+
 if __name__ == "__main__":
-    # TASK 5 – Kick things off!
     main()
-# -------------------------------------------------------------------
