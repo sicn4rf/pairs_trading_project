@@ -21,22 +21,30 @@ def backtest_pair(csv_path):
     position, entry_px, entry_day = 0, np.nan, None
     daily_pnl  = np.zeros(len(residuals))
 
-    for i in range(len(residuals)):
+    for i in range(len(z)):
 
         # ── ENTRY ──────────────────────────────────────────────────────
         if position == 0:
             if   z[i] >  THRESHOLD_IN:
                 position, entry_px, entry_day = -1, residuals[i], i
                 daily_pnl[i] -= CAPITAL * TC_PCT_SIDE     # commission/slip
+
+                print(f"Entering market @ position {position} and entry_px @ {entry_px}\n")
+
             elif z[i] < -THRESHOLD_IN:
                 position, entry_px, entry_day =  1, residuals[i], i
                 daily_pnl[i] -= CAPITAL * TC_PCT_SIDE
+
+                print(f"Entering market @ position {position} and entry_px @ {entry_px}\n")
 
         # ── EXIT / MARK-TO-MARKET ─────────────────────────────────────
         elif position != 0:
             # Hard stop: max holding period
             if i - entry_day >= MAX_HOLD or abs(z[i]) < THRESHOLD_OUT:
                 daily_pnl[i] += position * (residuals[i] - entry_px) * CAPITAL
+                print(f"Entry closing residual - entry residual * capital {(residuals[i] - entry_px) * CAPITAL}")
+                print(f"Exiting market with position @ {position}")
+                print(f"Daily PnL: {daily_pnl[i]}\n")
                 daily_pnl[i] -= CAPITAL * TC_PCT_SIDE      # exit cost
                 position = 0
 
@@ -68,8 +76,13 @@ def backtest_pair(csv_path):
 
 def main():
     rows = []
-    for f in os.listdir(SUCCESS_DIR):
-        if f.endswith(".csv"):
+    csv_files = [f for f in os.listdir(SUCCESS_DIR) if f.endswith(".csv")]
+
+    if not csv_files:
+        print('Successes folder is empty...')
+        exit()
+    else:
+        for f in csv_files:
             rows.append(backtest_pair(os.path.join(SUCCESS_DIR, f)))
 
     res = pd.DataFrame(rows).sort_values("TotalPnL", ascending=False)
