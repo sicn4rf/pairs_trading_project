@@ -28,7 +28,7 @@ if choice not in SECTORS:
 
 tickers = SECTORS[choice]
 
-with open("./data/results/sector_choice.txt", "w") as outFile:
+with open("../../data/results/sector_choice.txt", "w") as outFile:
     outFile.write(choice + "\n")
 
 
