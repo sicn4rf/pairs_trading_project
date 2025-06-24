@@ -113,21 +113,28 @@ def process_csv(file_path, file_name, isSuccess) -> bool:
 
 
 # declare counter variables
-count = 0
-counter = 0
+tested = 0
+successful = 0
 
 # Runs process_csv() function and processes .csv's in both directories
-for file_name in os.listdir(failure_dir):
-    # increment count for every pair tested
-    count += 1
+fail_csv = [f for f in os.listdir(failure_dir) if f.endswith(".csv")]
+success_csv = [f for f in os.listdir(success_dir) if f.endswith(".csv")]
 
-    # if returns true, increment successful pairs
-    if process_csv(failure_dir, file_name, isSuccess=False):
-        counter += 1
-        
-for file_name in os.listdir(success_dir):
+if not fail_csv:
+    print("Failures folder is empty...")
+else:
+    for file_name in fail_csv:
+        process_csv(failure_dir, file_name, isSuccess=False)
 
-    process_csv(success_dir, file_name, isSuccess=True)
 
-print(f"Tested {count} pairs...")
-print(f"{counter} pairs showed to be likely cointegrated")
+if not success_csv:
+    print("Successes folder is emtpy... no correlated pairs :(...")
+else:
+    for file_name in success_csv:
+        tested += 1
+        # if returns true, increment successful pairs
+        if process_csv(success_dir, file_name, isSuccess=True):
+            successful += 1
+
+print(f"Tested {tested} pairs...")
+print(f"{successful} pairs showed to be likely cointegrated")
