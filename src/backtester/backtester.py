@@ -1,27 +1,32 @@
-"""
-pairs_backtest.py
-Back-tests every <Y>_<X>.csv in data/processed/successes/
 
-Each CSV must contain at least:
-    <Y> Raw Price, <X> Raw Price, Residual, Beta
-Residual must be  log(Y) − [Alpha + Beta · log(X)]
+# pairs_backtest.py
+# Back-tests every <Y>_<X>.csv in data/processed/successes/
 
-Strategy:
-    • Rolling 21-day mean / std dev  →  z-score
-    • Entry  when z crosses ±1.3
-    • Exit   when z crosses back ±0.3
-    • Size   so a further 1.2 σ adverse move ≈ $2 000 (2 % of 100 k)
-    • HARD CAP: gross notional ≤ 150 % of equity
-"""
+# Each CSV must contain at least:
+#     <Y> Raw Price, <X> Raw Price, Residual, Beta
+# Residual must be  log(Y) − [Alpha + Beta · log(X)]
+
+# Strategy:
+#     • Rolling 21-day mean / std dev  →  z-score
+#     • Entry  when z crosses ±1.3
+#     • Exit   when z crosses back ±0.3
+#     • Size   so a further 1.2 σ adverse move ≈ $2 000 (2 % of 100 k)
+#     • HARD CAP: gross notional ≤ 150 % of equity
+
 
 import os
 import numpy as np
 import pandas as pd
+import sys
 from pathlib import Path
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+
+from utils.bt_ui import print_plain
 
 
 # ----------------------------- USER PARAMS -------------------------------- #
-SUCCESS_DIR  = "data/processed/successes/"   # folder of pair CSVs
+SUCCESS_DIR  = "../../data/processed/successes/"   # folder of pair CSVs
 WINDOW       = 21          # rolling window for z-score
 ENTRY_TH     = 1.5
 EXIT_TH      = 0.5
@@ -156,7 +161,7 @@ def main():
         exit()
 
     summary = pd.DataFrame(rows).sort_values("TotalPnL", ascending=False)
-    print(summary.to_string(index=False))
+    print_plain(summary)
     summary.to_csv("backtest_results.csv", index=False)
     print("\nSaved to backtest_results.csv")
 
