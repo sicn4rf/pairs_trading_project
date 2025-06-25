@@ -24,11 +24,11 @@
 
 /* =============================  INSUR  ============================== */
 #define INSUR \
-    "BRK-B","BRK-A","CB",   "AON",  "MMC",  "TRV",  "AIG",  "MET",  "PRU",  "AFL", \
+    "BRK-B", "CB",   "AON",  "MMC",  "TRV",  "AIG",  "MET",  "PRU",  "AFL", \
     "PGR",  "CINF", "HIG",  "WRB",  "RNR",  "LNC",  "GL",   "RGA",  "PFG",  "UNM", \
     "AIZ",  "MKL",  "ORI",  "SIGI", "ACGL", "AJG",  "BRO",  "EG",   "RLI",  "KNSL",\
     "CNA",  "CNO",  "FG",   "MFC",  "SLF",  "PUK",  "L",    "VOYA", "CRBG", "BHF", \
-    "PRI",  "SAFT", "ERIE", "HMN",  "THG"
+    "PRI",  "SAFT", "ERIE", "HMN",  "THG", "ALL"
 
 /* =============================  FASTF  ============================== */
 #define FASTF \
