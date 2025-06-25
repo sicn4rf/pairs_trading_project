@@ -12,6 +12,8 @@ California State University, Fullerton — CIC | PCUBED Summer 2025*
 
 ## 1 • Project Snapshot
 We monitor **45 tickers in five sectors** for market‑neutral pairs‑trading edges.
+* 45 stocks **1,980 unique pairs (ordered permutatinons)**
+* For each pair we run the Engle-Granger regression in **both directions** since cointegration is asymmetric
 
 | Tag | Sector | Example tickers |
 |-----|--------|-----------------|
@@ -23,10 +25,14 @@ We monitor **45 tickers in five sectors** for market‑neutral pairs‑trading
 
 **Pipeline**
 
-1.  **Data Downloader** 1‑year daily bars (`yfinance`)  
-2.  **Correlation Analysis** Pearson ρ ≥ 0.70 (C++)  
-3.  **Cointegration Testing** via Engle‑Granger ADF (Python) p-value < 0.05 
+1.  **Data Downloader** 1 trading year, daily prices (`yfinance`)  
+
+2.  **Correlation Analysis** Pearson correlation coefficient, filter pairs with ρ ≥ 0.70 (C++)  
+
+3.  **Cointegration Testing** via Engle‑Granger ADF test on log price residuals, p-value < 0.05 (Python) 
+
 4.  **Back‑test** z‑score mean reversion (±1.5 in / ±0.5 out; 1 % loss stop)  
+
 5.  **Visualize** residuals & heat‑maps in Jupyter
 
 <p align="center">
