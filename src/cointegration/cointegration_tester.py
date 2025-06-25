@@ -14,7 +14,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from utils.cli_ui import header, keyval, cointegration_table
+from utils.cli_ui import header, keyval, cointegration_table, GREEN 
 
 
 # ======================
@@ -147,4 +147,8 @@ else:
 
 likely_pairs.sort(key=lambda t: t[1])
 cointegration_table(likely_pairs)
-keyval("Total likely pairs:", f"{len(likely_pairs)} / {tested}")
+passed = f"{len(likely_pairs)} out of {tested} (~{int(100 * len(likely_pairs) / tested)}%)\n"
+
+print('\n')
+
+keyval("Total likely pairs:", passed, GREEN)
