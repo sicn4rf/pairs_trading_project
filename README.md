@@ -1,4 +1,4 @@
-# Sector-Wise Pairs-Trading Pipeline
+# Pairs Trading: Large-Scale Cointegration Testing Across Five Equity Sectors
 
 *A student-led quantitative research project  
 California State University, Fullerton — CIC | PCUBED Summer 2025*
