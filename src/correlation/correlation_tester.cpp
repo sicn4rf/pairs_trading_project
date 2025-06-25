@@ -216,7 +216,7 @@ int main(void)
     keyval("Pairs tested:", to_string(total_count), BOLD);
 
     string passed  = to_string(corr_count) +
-                        " (" +
+                        " (~" +
                         to_string(static_cast<int>(
                             100.0 * corr_count / total_count)) +
                         "%)";
