@@ -1,40 +1,55 @@
-# Sector‑Wise Pairs‑Trading Pipeline
+# Sector-Wise Pairs-Trading Pipeline
 
-*A student‑led quantitative research project (CSUF CIC | PCUBED Summer 2025)*
+*A student-led quantitative research project  
+California State University, Fullerton — CIC | PCUBED Summer 2025*
+
+---
+
+## What is this?
+> **For students** – an end‑to‑end lesson in scraping, time‑series stats, and strategy back‑testing.  
 
 ---
 
 ## 1 • Project Snapshot
-We screen **45 U.S. equities across five sectors**
-> • **TECH** – Technology & Semiconductors  
-> • **PHARMA** – Pharmaceuticals & Biotech  
-> • **NRG** – Energy (Oil & Gas, Services)  
-> • **INSUR** – Insurance & Financial Services  
-> • **FASTF** – Fast‑Food & Restaurant Chains for market‑neutral **pairs‑trading** opportunities.
+We monitor **45 tickers in five sectors** for market‑neutral pairs‑trading edges.
+
+| Tag | Sector | Example tickers |
+|-----|--------|-----------------|
+| **TECH**  | Technology & Semiconductors | NVDA AMD ADI |
+| **PHARMA**| Pharmaceuticals / Biotech   | PFE LLY MRNA |
+| **NRG**   | Energy (Oil & Gas, Services)| CVX XOM FANG |
+| **INSUR** | Insurance & Financial Svcs  | ALL PGR TRV |
+| **FASTF** | Fast‑Food Chains            | MCD YUM CMG |
 
 **Pipeline**
-1. **Scrape** 1 trading year, daily adjusted close prices (Python + *yfinance*)
-2. **Correlation analysis** for ρ ≥ 0.70 (C++ for speed)
-3. **Cointegration test** with Engle‑Granger ADF (Python/statsmodels)
-4. **Back‑test** mean‑reversion strategy with dynamic sizing & 1 % risk stop
-5. **Visualize** spreads & heat‑maps in Jupyter
+
+1.  **Data Downloader** 1‑year daily bars (`yfinance`)  
+2.  **Correlation Analysis** Pearson ρ ≥ 0.70 (C++)  
+3.  **Cointegration Testing** via Engle‑Granger ADF (Python) p-value < 0.05 
+4.  **Back‑test** z‑score mean reversion (±1.5 in / ±0.5 out; 1 % loss stop)  
+5.  **Visualize** residuals & heat‑maps in Jupyter
+
+<p align="center">
+  <img src="src/visualization/img/apa_cve_residual.png" width="640">
+  <br><em>Example: residual spread between APA & CVE (NRG sector)</em>
+</p>
 
 ---
 
 ## 2 • Quick Start
-```bash
-# clone & enter
-git clone https://github.com/sicn4rf/pairs_trading_project.git
-cd pairs‑trading‑project
 
-# set up isolated env
+```bash
+# 1 • Clone
+git clone https://github.com/sicn4rf/pairs_trading_project.git
+cd pairs_trading_project
+
+# 2 • Install deps (use --user, venv, or conda)
 pip install --user -r requirements.txt
 
-
-# run full pipeline (prompts for sector)
+# 3 • Run end‑to‑end
 ./run_all.sh
 
-# open notebooks (optional)
+# 4 • Explore notebooks
 jupyter lab src/visualization/
 ```
 
@@ -43,62 +58,59 @@ jupyter lab src/visualization/
 ## 3 • Repository Layout
 ```text
 .
-├── config/                    # sector lists, ticker macros, global settings
+├── config/              # sector lists, global params
 │   └── ticker_macros.py
-├── data/
-│   ├── raw/                   # yfinance *.csv per ticker
-│   └── processed/
-│       ├── results/           # results.txt summary
-│       ├── successes/         # cointegrated pair residuals
-│       └── failures/          # non‑cointegrated pairs
+├── data/                # raw & processed CSVs (git‑ignored)
+│   ├── raw/
+│   └── processed/{results|successes|failures}
 ├── src/
-│   ├── downloader/            # download_stock_data.py
-│   ├── correlation/           # C++ corr engine (+headers)
-│   ├── cointegration/         # cointegration_tester.py
-│   ├── backtester/            # backtester.py + backtest_results.csv
-│   └── visualization/         # Jupyter dashboards (heat‑map, raw_ot.ipynb …)
-├── utils/                     # shared helpers (cli_ui.py, etc.)
-├── run_all.sh                 # orchestrates entire flow
+│   ├── downloader/      # fetch_prices.py
+│   ├── correlation/     # fast Pearson calc (C++)
+│   ├── cointegration/   # engle_granger.py
+│   ├── backtester/      # backtester.py + backtest_results.csv
+│   └── visualization/   # heat_map.ipynb, residual_viewer.ipynb, …
+├── utils/               # cli_ui.py, helpers
+├── run_all.sh           # glue script
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## 4 • Methodology at a Glance
-| Step | Tooling | Purpose |
-|------|---------|---------|
-| **Data Ingest** | Python (pandas) | Pull & clean OHLCV |
-| **Correlation Filter** | C++ (parallel arrays) | Keep pairs with ρ ≥ 0.70 |
-| **Cointegration Check** | Python / statsmodels | ADF on residuals, p < 0.05 |
-| **Back‑test** | Python | Z‑score entry (±1.5) / exit (±0.5), 1 % risk stop |
-| **Visualize** | Jupyter + matplotlib | Spreads, heat‑maps, dropdown charts |
+## 4 • Configuration for Backtesting
 
-Key knobs live in **`config/ticker_macros.py`** (sector lists) and `src/backtester/config.yaml`.
+| Key | Default | Description |
+|-----|---------|-------------|
+| `ROLL_Z`     | `21`  | rolling window for z‑score |
+| `THRESH_IN`  | `1.5` | σ to open a trade |
+| `THRESH_OUT` | `0.5` | σ to close (take profit) |
+| `MAX_RISK`   | `0.01`| stop‑loss % of capital |
+| `ADF_PVAL`   | `0.05`| cointegration p‑value cut‑off |
 
----
-
-## 5 • Output Cheatsheet
-| Path | Contents |
-|------|----------|
-| `data/processed/successes/*.csv` | Residual series & hedge ratio |
-| `backtester/backtest_results.csv` | P&L, ann. return, Sharpe, trades |
-| Terminal | Pass/fail counts & top‑Sharpe leaderboard |
-| Notebooks | Interactive plots & dashboards |
+All live in **`src/backtester/backtester.py`**.
 
 ---
 
-## 6 • Limitations & To‑Do
-* **Zero fees/slippage** → add realistic cost model  
-* **Static hedge ratio** → rolling β or Kalman filter  
-* **Single‑year sample** → multi‑year walk‑forward test  
-* **Look‑ahead bias** → rolling train/test window  
+## 5 • Sample Results (NRG sector, 2024‑06‑25 → 2025‑06‑24)
+
+| Pair | Trades | P&L USD | Ann.% | Sharpe |
+|------|-------:|--------:|------:|-------:|
+| `RIG_NOV` | **17** | **17 661** | **17.8 %** | **3.92** |
+| `OII_RIG` | 15 | 15 383 | 15.5 % | 3.31 |
+| `CVE_EOG` | 13 | 11 615 | 11.7 % | 2.62 |
+
+Full table in **`src/backtester/backtest_results.csv`**.
 
 ---
 
-## 7 • Team
-Built by: Francis Padua, Samuel Chun
-Mentors: **Dr. Doina Bein**, CSUF **CIC | PCUBED**
-Contact: <paduafrancis45@gmail.com> <schun562@gmail.com>
+## 6 • Limitations & Next Steps
+* No transaction‑cost model — add realistic fees / slippage  
+* Static hedge ratio — implement rolling β or Kalman filter  
+* Single‑year sample — run multi‑year walk‑forward test  
+* Look‑ahead bias — discover pairs in a rolling train/test window  
 
 ---
+
+## 7 • Acknowledgements
+Developed by **Francis Padua** & **Samuel Chun** under the mentorship of **Dr. Doina Bein**.  
+Funded by **CSUF CIC | PCUBED** (Pathways, Pipeline, Practice).
