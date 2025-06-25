@@ -40,6 +40,9 @@ double pearsonCorrelation(const vector<double>& log_returnX, const vector<double
 void linearRegression(const vector<double>& stock_valuesX, const vector<double>& stock_valuesY, double& refBeta, vector<double>& refResiduals);
 void exportResidualCSV(const string& filename, const StockData& stock_objectX, const StockData& stock_objectY);
 string readSector(const string& file_name);
+double min(const vector<double>& stock_values) ;
+double max(const vector<double>& stock_values); 
+
 // - set<string> alignDates(const vector<StockData>&);
 // - vector<double> extractAlignedPrices(const StockData&, const set<string>&, bool useLog);
 

@@ -119,6 +119,8 @@ int main(void)
         double stddev_value = stddev(current_stock.raw_prices, mean_value);
         double iqr_value = iqr(current_stock.raw_prices);
         double spread_value = spread(current_stock.raw_prices);
+        double max_value = max(current_stock.raw_prices);
+        double min_value = min(current_stock.raw_prices);
 
         // Output the statistics to a text file named after the stock ticker
         results_file << "Ticker: " << current_stock.ticker_name << endl;
@@ -127,6 +129,8 @@ int main(void)
         results_file << "Standard Deviation: " << stddev_value << endl;
         results_file << "IQR: " << iqr_value << endl;
         results_file << "Spread: " << spread_value << endl;
+        results_file << "Minimum: " << min_value << endl;
+        results_file << "Maximum: " << max_value << endl;
         results_file << "----------------------------------------" << endl;
     }
 

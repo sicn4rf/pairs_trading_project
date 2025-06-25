@@ -409,7 +409,34 @@ string readSector(const string& file_name)
 
 
 
+// === TASK 15: Implement min() and max() ===
+double min(const vector<double>& stock_values) 
+{
+    double min = stock_values[0];
 
+    for(const double& current_value : stock_values)
+    {
+        if(current_value < min)
+        {
+            min = current_value;
+        }
+    }
 
+    return min;  // returns min
+}
 
+double max(const vector<double>& stock_values) 
+{
+    double max = stock_values[0];
+
+    for(const double& current_value : stock_values)
+    {
+        if(current_value > max)
+        {
+            max = current_value;
+        }
+    }
+
+    return max;  // returns spread
+}
 
