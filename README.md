@@ -30,7 +30,7 @@ We monitor **45 tickers in five sectors** for market‑neutral pairs‑trading
 5.  **Visualize** residuals & heat‑maps in Jupyter
 
 <p align="center">
-  <img src="src/visualization/img/apa_cve_residual.png" width="640">
+  <img src="src/visualization/img/apa_cve_residuals.png" width="640">
   <br><em>Example: residual spread between APA & CVE (NRG sector)</em>
 </p>
 
