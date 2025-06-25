@@ -18,4 +18,4 @@ def cointegration_table(pairs):
     print(f"{BOLD}{' #':>3} {'Pair':<12} {'p-value':>8}{RESET}")
     for i, (pair, pval) in enumerate(pairs, 1):
         shade = GREEN if pval < 0.01 else (YEL if pval < 0.05 else "")
-        print(f"{i:>3} {pair:<12} {shade}{pval:>8.4f}{RESET}")
+        print(f"{i:>3} {pair:<12} {shade}{pval:>8.6f}{RESET}")
