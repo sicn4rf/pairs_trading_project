@@ -1,8 +1,11 @@
 #include "calc_functions.h"
 #include "ticker_macros.h"
+#include "cli_ui.h"
 
 int main(void)
 {
+    header("CORRELATION TEST");
+
     // === TASK 1: Read CSVs into StockData objects ===
     // For each of the 10 CSV files, read raw adjusted close prices, compute log prices,
     // and store them into StockData objects containing dates, raw_prices, log_prices.
@@ -43,7 +46,6 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-
     // Loop through every ticker in our tickers vector.
     for(const string& current_ticker : tickers)
     {
@@ -61,6 +63,11 @@ int main(void)
 
             stock_universe.push_back(temp_object);
         }
+    }
+
+    if (stock_universe.empty()) {
+        keyval("Error:", "No CSVs loaded — check downloader step");
+        return 1;
     }
     // End of task 1
 
@@ -206,7 +213,16 @@ int main(void)
 
     // === TASK 7: Complete program and wrap up ===
     // Ensure all files are properly closed, and print any summary or status messages.
-    cout << "Tested " << total_count << " permutations of pairs\n";
-    cout << corr_count << " pairs resulted in a correlation coefficient > 0.7\n\n";
+    keyval("Pairs tested:", to_string(total_count), BOLD);
+
+    string passed  = to_string(corr_count) +
+                        " (" +
+                        to_string(static_cast<int>(
+                            100.0 * corr_count / total_count)) +
+                        "%)";
+
+    keyval("ρ > 0.7 passed:", passed, GREEN);
+
+    cout << '\n';          
     return 0;
 }
