@@ -11,7 +11,7 @@ California State University, Fullerton — CIC | PCUBED Summer 2025*
 ---
 
 ## 1 • Project Snapshot
-We monitor **45 tickers in five sectors** for market‑neutral pairs‑trading edges.
+We monitor **45 tickers in five sectors (225 tickers in total, up to 9,900 pair permutations)** for market‑neutral pairs‑trading edges.
 * 45 stocks **1,980 unique pairs (ordered permutatinons)**
 * For each pair we run the Engle-Granger regression in **both directions** since cointegration is asymmetric
 
