@@ -141,7 +141,7 @@ def backtest_pair(csv_path: str) -> dict:
         sharpe = 0
 
     return {
-        "Pair": f"{dep_tick}_{ind_tick}",
+        "Pair": f"{ind_tick}_{dep_tick}",
         "Trades": len(trades),
         "TotalPnL": total_pnl,
         "AnnRet%": ann_ret,
@@ -151,7 +151,9 @@ def backtest_pair(csv_path: str) -> dict:
 
 def main():
     rows = []
-    csv_files = [f for f in os.listdir(SUCCESS_DIR) if f.endswith(".csv")]
+    list = os.listdir(SUCCESS_DIR)
+
+    csv_files = [f for f in list if f.endswith(".csv")]
     
     if csv_files:
         for file in csv_files:
