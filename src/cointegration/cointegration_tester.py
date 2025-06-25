@@ -10,6 +10,11 @@ import os
 import pandas as pd
 from statsmodels.tsa.stattools import adfuller
 import shutil
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+
+from utils.cli_ui import header, keyval, cointegration_table
 
 
 # ======================
@@ -32,7 +37,7 @@ success_dir = os.path.join(data_directory, "successes")
 failure_dir = os.path.join(data_directory, "failures")
 
 # This function allows us to process both the successes and failures directories by defining the process as a function.
-def process_csv(file_path, file_name, isSuccess) -> bool:
+def process_csv(file_path, file_name, isSuccess) -> float:
     # Task 3a: Check if file ends with '.csv' (only process residual files)
     if file_name.endswith(".csv"):
         # Task 3b: Build full file path using os.path.join
@@ -92,33 +97,34 @@ def process_csv(file_path, file_name, isSuccess) -> bool:
 
         # Task 7: Apply decision rule and print formatted result to screen AND final_results.txt in final_results directory
         if isSuccess:
-            if p_val < 0.05:
-                print(f"{stock1} and {stock2} are LIKELY cointegrated. p-value is {p_val:.4f}\n")
-                
-                return True
+            if p_val < 0.05:                
+                return p_val
             else:
                 # print(f"{stock1} and {stock2} are not cointegrated. p-value is {p_val:.4f}\n")
 
                 # shutil library allows us to move files (less error prone than os library)
                 shutil.move(file_path, f"../../data/processed/failures/{file_name}")
-                return False
+                return None
 
 
         if not isSuccess:
             if p_val < 0.05:
                 shutil.move(file_path, f"../../data/processed/misfits/{file_name}")
-                return False
+                return None
 
-        return False
+        return None
 
+
+header("COINTEGRATION TEST")
 
 # declare counter variables
 tested = 0
-successful = 0
 
 # Runs process_csv() function and processes .csv's in both directories
 fail_csv = [f for f in os.listdir(failure_dir) if f.endswith(".csv")]
 success_csv = [f for f in os.listdir(success_dir) if f.endswith(".csv")]
+
+likely_pairs  = []          # ← list of tuples (pair_str, p_val)
 
 if not fail_csv:
     print("Failures folder is empty...")
@@ -131,10 +137,14 @@ if not success_csv:
     print("Successes folder is emtpy... no correlated pairs :(...")
 else:
     for file_name in success_csv:
-        tested += 1
-        # if returns true, increment successful pairs
-        if process_csv(success_dir, file_name, isSuccess=True):
-            successful += 1
 
-print(f"Tested {tested} pairs...")
-print(f"{successful} pairs showed to be likely cointegrated")
+        tested += 1
+
+        p_val = process_csv(success_dir, file_name, isSuccess=True)
+        if p_val is not None:
+            pair = file_name.replace(".csv", "").replace("_", " / ")
+            likely_pairs.append((pair, p_val))
+
+likely_pairs.sort(key=lambda t: t[1])
+cointegration_table(likely_pairs)
+keyval("Total likely pairs:", f"{len(likely_pairs)} / {tested}")
