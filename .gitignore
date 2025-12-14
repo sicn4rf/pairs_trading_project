@@ -1,8 +1,34 @@
-/data/raw/*.csv
-/data/processed/successes/*.csv
-/data/processed/failures/*.csv
-/correlation_test/results/*
-/correlation_test/pairs/*
-/correlation_test/src/a.out
-/data_downloader/__pycache__/
+# Data files (generated during pipeline)
+data/raw/*.csv
+data/processed/successes/*.csv
+data/processed/failures/*.csv
+data/processed/misfits/*.csv
+data/results/*.txt
+
+# Compiled C++ binaries
+src/correlation/a.out
+src/correlation/correlation_tester
+*.o
+*.out
+
+# Python
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backtest results (optional - uncomment to ignore)
+# src/backtester/backtest_results.csv

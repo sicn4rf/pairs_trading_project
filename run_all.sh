@@ -1,19 +1,30 @@
+#!/usr/bin/env bash
+set -e
+
+echo "=== Pairs Trading Pipeline ==="
+
+# Ensure required directories exist
+mkdir -p data/raw data/processed/successes data/processed/failures data/processed/misfits data/results
+
+echo "[1/4] Downloading stock data..."
 cd src/downloader
-python download_stock_data.py
+python3 download_stock_data.py
 cd ../../
 
+echo "[2/4] Running correlation test..."
 cd src/correlation/
-g++ -std=c++11 correlation_tester.cpp calc_functions.cpp
-./a.out
-cd ../
-
-cd cointegration
-python cointegration_tester.py
+g++ -std=c++17 -o correlation_tester correlation_tester.cpp calc_functions.cpp
+./correlation_tester
 cd ../../
 
-#echo "Running Jupyter Notebooke Visualizer..."
-#jupyter nbconvert --to notebook --execute src/visualization/raw_ot.ipynb --inplace
+echo "[3/4] Running cointegration test..."
+cd src/cointegration
+python3 cointegration_tester.py
+cd ../../
 
+echo "[4/4] Running backtester..."
 cd src/backtester/
-python backtester.py
+python3 backtester.py
 cd ../../
+
+echo "=== Pipeline complete! ==="

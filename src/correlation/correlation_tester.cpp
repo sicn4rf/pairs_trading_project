@@ -94,13 +94,13 @@ int main(void)
     string filepath1 = "../../data/results";
 
     // Delete pairs if it exists
-    if (std::__fs::filesystem::exists(filepath1))
+    if (std::filesystem::exists(filepath1))
     {
-        std::__fs::filesystem::remove_all(filepath1);
+        std::filesystem::remove_all(filepath1);
     }
 
     // Create new pairs
-    std::__fs::filesystem::create_directory(filepath1);
+    std::filesystem::create_directory(filepath1);
 
     // Open a results file to write the statistics
     ofstream results_file("../../data/results/results.txt");
@@ -157,13 +157,13 @@ int main(void)
     string filepath2 = "../../data/processed";
 
     // Delete pairs if it exists
-    if (std::__fs::filesystem::exists(filepath2))
+    if (std::filesystem::exists(filepath2))
     {
-        std::__fs::filesystem::remove_all(filepath2);
+        std::filesystem::remove_all(filepath2);
     }
 
     // Create new pairs
-    std::__fs::filesystem::create_directory(filepath2);
+    std::filesystem::create_directory(filepath2);
 
     int total_count = 0;
     int corr_count = 0;
@@ -184,9 +184,9 @@ int main(void)
             double corr_coeff = pearsonCorrelation(stock_universe[i].log_returns, stock_universe[j].log_returns);
 
             // Create three folders
-            std::__fs::filesystem::create_directory(filepath2 + "/successes/");
-            std::__fs::filesystem::create_directory(filepath2 + "/failures/");
-            std::__fs::filesystem::create_directory(filepath2 + "/misfits/");
+            std::filesystem::create_directory(filepath2 + "/successes/");
+            std::filesystem::create_directory(filepath2 + "/failures/");
+            std::filesystem::create_directory(filepath2 + "/misfits/");
 
             if(corr_coeff >= 0.7)
             {

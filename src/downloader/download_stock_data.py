@@ -61,10 +61,13 @@ for tick in tickers:
     # of that particular stock from a start to end date, which we store in a data frame using pandas.
     data_frame = current_tick.history(start=start_date.strftime('%Y-%m-%d'), end=end_date.strftime('%Y-%m-%d'),interval='1d',auto_adjust=True)
 
+    # Skip if no data was returned (delisted or invalid ticker)
+    if data_frame.empty:
+        print(f"  {YEL}Warning: No data for {tick}, skipping...{RESET}")
+        continue
+
     # Make it so that our data frame for date only includes the date and not the time
     data_frame.index = data_frame.index.date
-
-    data_frame.drop(columns=["Volume", "Dividends", "Stock Splits"], inplace=True)
     
     # Use pandas to store the historical data from the data frame into a .csv file, index_label="Date" means that the index of the data frame will be used as the first column in the csv file
     data_frame.to_csv(f"../../data/raw/{tick}.csv", index_label="Date")

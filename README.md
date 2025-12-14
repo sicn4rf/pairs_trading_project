@@ -42,20 +42,28 @@ We monitor **45 tickers in five sectors (225 tickers in total, up to 9,900 pai
 
 ---
 
-## 2 • Quick Start
+## 2 • Quick Start
+
+> **📖 First time?** See [SETUP.md](SETUP.md) for detailed installation instructions.
 
 ```bash
-# 1 • Clone
+# Quick setup (requires Python 3.8+, g++, pip)
 git clone https://github.com/sicn4rf/pairs_trading_project.git
 cd pairs_trading_project
 
-# 2 • Install deps (use --user, venv, or conda)
-pip install --user -r requirements.txt
+# Create virtual environment and install dependencies
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
 
-# 3 • Run end‑to‑end
+# Create required directories
+mkdir -p data/{raw,processed/{successes,failures,misfits},results}
+
+# Run pipeline
+chmod +x run_all.sh  # Unix/Mac only
 ./run_all.sh
 
-# 4 • Explore notebooks
+# Explore notebooks
 jupyter lab src/visualization/
 ```
 
